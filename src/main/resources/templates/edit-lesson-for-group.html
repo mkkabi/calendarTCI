@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="header.html :: head('Edit Lesson')">
+</head>
+<body>
+<div th:replace="header.html :: navbar"></div>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div th:fragment="lessonform">
+                        <div class="col-md-offset-2">
+                            <h2>Create New Lesson</h2>
+                        </div>
+                        <form class="form-horizontal" th:action="@{|/lessons/${id}/group/${groupId}/edit|}"
+                              th:object="${lesson}" method="post">
+
+                            <!--                            <div class="form-check">-->
+                            <!--                                <input class="form-check-input" type="checkbox" value="" id="wholeDayEvent" th:field="*{wholeDayEvent}">-->
+                            <!--                                <label class="form-check-label" for="wholeDayEvent">Whole day event?</label>-->
+                            <!--                            </div>-->
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="online" th:field="*{online}">
+                                <label class="form-check-label" for="online">Online lesson?</label>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="lesson-auditoriumNumber" class="col-sm-4 col-form-label">Auditorium Number:</label>
+                                <div class="col-sm-8">
+                                    <input type="number" th:field="*{auditoriumNumber}" id="lesson-auditoriumNumber"/>
+                                    <small class="form-text text-muted" th:if="${#fields.hasErrors('auditoriumNumber')}"
+                                           th:errors="*{auditoriumNumber}"></small>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label id="startDate"  for="lesson-start-date" class="col-sm-4 col-form-label">Lesson start Date:</label>
+                                <div class="col-sm-8">
+                                    <input type="date" id="lesson-start-date" name="startDate"/>
+                                    <!--                                    <small class="form-text text-muted" th:if="${}" th:errorclass="error" th:text="this field is necessary" />-->
+
+                                </div>
+                            </div>
+
+                            <!--                            <div class="form-group">-->
+                            <!--                                <label id="endDate" for="lesson-end-date" class="col-sm-4 col-form-label">Lesson End Date:</label>-->
+                            <!--                                <div class="col-sm-8">-->
+                            <!--                                    <input type="date" th:field="*{endDate}" id="lesson-end-date"/>-->
+                            <!--                                    <small class="form-text text-muted" th:if="${#fields.hasErrors('endDate')}"-->
+                            <!--                                           th:errors="*{endDate}"></small>-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
+
+                            <div class="form-group">
+<!--                                <label for="discipline" class="col-sm-4 col-form-label">Choose Discipline:</label>-->
+<!--                                <div class="col-sm-8">-->
+<!--                                    <select class="form-control" name="discipline" id="discipline">-->
+<!--                                        <option>Select Discipline...</option>-->
+<!--                                        <option th:each="discipline : ${disciplines}" th:value="${discipline.id}"-->
+<!--                                                th:text="${discipline.name}"></option>-->
+<!--                                    </select>-->
+<!--                                </div>-->
+                            </div>
+
+                            <div class="form-group">
+<!--                                <label for="teacher" class="col-sm-4 col-form-label">Choose teacher:</label>-->
+<!--                                <div class="col-sm-8">-->
+<!--                                    <select class="form-control" name="teacher" id="teacher">-->
+<!--                                        <option>Select teacher...</option>-->
+<!--                                        <option th:each="teacher : ${teachers}" th:value="${teacher.id}"-->
+<!--                                                th:text="${teacher.name}"></option>-->
+<!--                                    </select>-->
+<!--                                </div>-->
+                            </div>
+
+                            <div class="form-group">
+                                <label for="timeFrameId" class="col-sm-4 col-form-label">Choose timeframe:</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" id="timeFrameId" name="timeFrameId">
+                                        <option value="0">Select timeframe...</option>
+                                        <option th:each="timeframe : ${timeFrames}"
+                                                th:text="${timeframe.title}" th:value="${timeframe.id}"></option>
+                                    </select>
+                                    <!--                                    <small class="form-text text-muted" th:if="${#fields.hasErrors('timeFrameId')}"-->
+                                    <!--                                           th:errors="*{timeFrameId}"></small>-->
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="classType" class="col-sm-4 col-form-label">Choose Class Type:</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" name="classType" id="classType">
+                                        <option>Select classType...</option>
+                                        <option th:each="classType : ${classTypes}" th:value="${classType.id}"
+                                                th:text="${classType.type}"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-offset-2 col-sm-8">
+                                <input class="btn btn-info" type="submit" value="Create"/>
+                                <input class="btn btn" type="reset" value="Clear"/>
+                                <input name="id" th:value="${groupId}" type="hidden"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+<!--        <th:block th:if="${duplicateLessonOfTeacher!=null}">-->
+<!--            <div class="col-lg-4">-->
+<!--                <div class="card mb-4">-->
+<!--                    <div class="card-body">-->
+<!--                        <h5>Duplicate Lesson Found for Teacher <th:block th:text="${duplicateLessonOfTeacher.teacher}"/>:</h5>-->
+<!--                        <br>-->
+<!--                        <h6 th:text="${'Teacher: '+duplicateLessonOfTeacher.teacher}"></h6>-->
+<!--                        <span><b>Starts on:</b></span>-->
+<!--                        <span th:text="${#temporals.format(duplicateLessonOfTeacher.startDateTime, 'dd-MM-yyyy')}+' Time: '+-->
+<!--                                        ${#temporals.format(duplicateLessonOfTeacher.startDateTime, 'HH:mm')}"></span>-->
+<!--                        <br>-->
+<!--                        <span><b>Ends on:</b></span>-->
+<!--                        <span th:text="${#temporals.format(duplicateLessonOfTeacher.endDateTime, 'dd-MM-yyyy HH:mm')}"></span>-->
+<!--                        <br>-->
+<!--                        <span>Group where <th:block th:text="${duplicateLessonOfTeacher.teacher}"/> teaches: <th:block th:text="${duplicateLessonOfTeacher.groupNumber}"/> </span>-->
+<!--                        <br/>-->
+<!--                        <a th:href="@{|/teachers/${duplicateLessonOfTeacher.getTeacherId()}/open|}">-->
+<!--                            <b>Open <th:block th:text="${duplicateLessonOfTeacher.teacher}"/> page</b>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </th:block>-->
+
+<!--        <th:block th:if="${duplicateLessonOfGroup!=null}">-->
+<!--            <div class="col-lg-4">-->
+<!--                <div class="card mb-4">-->
+<!--                    <div class="card-body">-->
+<!--                        <h5>Duplicate Lesson Found for Group #<th:block th:text="${duplicateLessonOfGroup.groupNumber}"/>:</h5>-->
+<!--                        <br>-->
+<!--                        <h6 th:text="${'Teacher: '+duplicateLessonOfGroup.teacher}"></h6>-->
+<!--                        <span><b>Starts on:</b></span>-->
+<!--                        <span th:text="${#temporals.format(duplicateLessonOfGroup.startDateTime, 'dd-MM-yyyy')}+' Time: '+-->
+<!--                                        ${#temporals.format(duplicateLessonOfGroup.startDateTime, 'HH:mm')}"></span>-->
+<!--                        <br>-->
+<!--                        <span><b>Ends on:</b></span>-->
+<!--                        <span th:text="${#temporals.format(duplicateLessonOfGroup.endDateTime, 'dd-MM-yyyy')}+' Time: '+-->
+<!--                                        ${#temporals.format(duplicateLessonOfGroup.endDateTime, 'HH:mm')}"></span>-->
+<!--                        <br>-->
+
+<!--                        <span>Teacher of the Lesson: <th:block th:text="${duplicateLessonOfGroup.teacher}"/></span>-->
+<!--                        <br/>-->
+<!--                        <a th:href="@{|/teachers/${duplicateLessonOfGroup.getTeacherId()}/open|}">-->
+<!--                            <b>Open <th:block th:text="${duplicateLessonOfGroup.teacher}"/> page</b>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </th:block>-->
+
+    </div>
+</div>
+
+</body>
+</html>

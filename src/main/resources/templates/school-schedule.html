@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="header.html :: head('Schedulre Page')">
+</head>
+<body>
+<div th:replace="header.html :: navbar"></div>
+
+<!--    Classes and IDs checked-->
+
+
+
+
+
+<div th:fragment="schoolSchedule">
+    <div class="table-responsive">
+        <table class="tg table  table-bordered table-striped table-hover table-sm">
+            <tbody>
+            <tr scope="row">
+                <th class="tg-0lax upright-text" rowspan="2">Місяць</th>
+                <th class="tg-0lax upright-text" rowspan="2">Дата</th>
+                <th class="tg-cly1 upright-text" rowspan="2">№ пари</th>
+                <th class="tg-0lax" rowspan="2">Час</th>
+                <th class="tg-0lax" colspan="6">Дні тижня / дисципліни</th>
+            </tr>
+
+            <tr scope="row">
+                <th:block th:if="${daysOfQueryWeekWithDates!=null}" th:each="day: ${daysOfQueryWeekWithDates}">
+                    <th class="tg-0lax">
+                        <span th:text="${day.key}"/><br/><span th:text="${day.value}"/>
+                    </th>
+                </th:block>
+            </tr>
+
+
+            <th:block th:each="i: ${#numbers.sequence(0, timeFrames.size()-1)}">
+                <tr scope="row">
+                    <th:block th:if="${i==0}">
+                        <th class="tg-0lax reverse bottom-top" rowspan="6"
+                            th:text="${monthOfTheWeekOfQuery+' ('+weekNumberOfStudyCalendar + ' тиждень)'}">Місяць (25тиждень)</th>
+                        <th class="tg-0lax reverse bottom-top" rowspan="6"
+                            th:text="${daysOfQueryWeekWithDates.get(firstDayWeekName)+' - '+daysOfQueryWeekWithDates.get(seventhDayWeekName)}">
+                            Monday date - Saturday date
+                        </th>
+                    </th:block>
+                    <th:block th:if="${lessonsMap.size()>0}">
+                        <td class="tg-0lax text-middle-justify" th:text="${i+1}"></td>
+                        <td class="tg-0lax text-middle-justify" th:text="${timeFrames.get(i)}">time</td>
+
+                        <th:block th:each="y: ${#numbers.sequence(1, 6)}">
+
+                            <th:block th:with="lesson=${lessonsMap.get(timeFrames.get(i)).get(daysOfWeekMap.get(y))}">
+                                <th:block th:if="${lesson!=null}">
+                                    <td class="tg-0lax" th:styleappend="${lesson.isOnline()}?'background-color:'+${onlineClassColor}:'background-color:'+${lesson.classTypeColor}">
+                                        <span th:if="${lesson.getDiscipline()!=null && !lesson.getDiscipline().isEmpty()}" th:text="${lesson.discipline}"/><br>
+                                        <span th:if="${lesson.getGroupNumber()!=null && lesson.getGroupNumber()!=0}" th:text="${'Група: '+lesson.groupNumber}"/><br>
+                                        <span th:if="${lesson.getTeacher()!=null}" th:text="${'Викладач: '+lesson.teacher}"/><br>
+                                        <span th:if="${lesson.isOnline()}">ONLINE!</span><br>
+                                        <span th:if="${lesson.auditoriumNumber!=null && !lesson.auditoriumNumber.isEmpty()}" th:text="${'Аудиторія '+lesson.auditoriumNumber}"/><br>
+                                        <span th:if="${lesson.showClassTypeOnSchedule}" th:text="${lesson.classType}"/><br>
+                                    </td>
+
+                                </th:block>
+                                <th:block th:if="${lesson==null}">
+                                    <td class="tg-0lax"></td>
+                                </th:block>
+                            </th:block>
+                        </th:block>
+                    </th:block>
+
+                    <th:block th:if="${lessonsMap.size()<=0}">
+                    </th:block>
+                </tr>
+            </th:block>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<footer th:replace="header.html :: footer"></footer>
+</body>
+</html>

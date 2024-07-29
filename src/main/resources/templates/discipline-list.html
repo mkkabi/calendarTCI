@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="header.html :: head('List of Disciplines')">
+</head>
+<body>
+<div th:replace="header.html :: navbar"></div>
+
+<!--    Classes and IDs checked-->
+
+<div class="col-md-offset-2 col" th:fragment="disciplineslist">
+    <h2>List of Disciplines</h2>
+    <form th:action="@{/disciplines/create}" method="get">
+        <div>
+            <input class="btn-info btn-lg" type="submit" value="Create new Discipline">
+        </div>
+    </form>
+    <br>
+    <table class="table" th:if="${disciplines!=null}">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Semester</th>
+            <th scope="col">Credits</th>
+            <th scope="col">Hours</th>
+            <th scope="col">Education Form</th>
+            <th scope="col">Additional Information</th>
+            <th scope="col">Group #</th>
+            <th scope="col" colspan="2">Operations</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="discipline : ${disciplines}">
+            <td th:text="${discipline.id}"/>
+            <td th:if="${discipline.name!=null}" th:text="${discipline.name}" />
+            <td th:text="${discipline.semester}" />
+            <td th:text="${discipline.credits}" />
+            <td th:text="${discipline.hours}" />
+            <td th:if="${discipline.educationForm!=null}" th:text="${discipline.educationForm}" />
+            <td>
+                <a th:href="@{|/disciplines/${discipline.id}/open|}">More information</a>
+            </td>
+            <td>
+                <th:block th:if="${discipline.disciplineGroup != null}">
+                    <th:block th:text="${discipline.disciplineGroup}" />
+                </th:block>
+            </td>
+            <td>
+                <a th:href="@{|/disciplines/${discipline.id}/edit|}">Edit </a>|
+<!--                <a class="delete" th:href="@{|/disciplines/${discipline.id}/delete|}" onclick="return confirm('Are you sure?');"> Delete</a>-->
+            </td>
+        </tr>
+    </table>
+</div>
+
+<footer th:replace="header.html :: footer"></footer>
+</body>
+</html>

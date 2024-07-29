@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="header.html :: head('Weekly events')">
+</head>
+<body>
+<div th:replace="header.html :: navbar"></div>
+
+<br>
+<h1 style="margin: 0 auto; width: max-content" th:text="${code}" />
+<h2 style="margin: 0 auto; width: max-content" th:text="${message}" />
+</body>
+</html>

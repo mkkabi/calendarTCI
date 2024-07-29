@@ -1,0 +1,17 @@
+Join fetch example
+
+@Entity
+public class Academic_Record {
+
+    @JoinColumn(name = "product_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Product product;
+
+.....
+In the repository:
+
+@Query(value = "select ar from Academic_Record ar " +
+        "join fetch ar.product p " +
+        "where ar.enrollmentStudent.id = :enrollmentStudentId " +
+        "and ar.product.id = :productId")
+Academic_Record findByEnrollmentStudentIdAndProductIdWithProduct(Long enrollmentStudentId, Integer productId);
