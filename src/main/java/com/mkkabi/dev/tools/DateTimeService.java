@@ -69,7 +69,7 @@ public class DateTimeService {
                 lessonsByOrderAndDayOfWeek.get(timeFrameString).put(dayOfWeek, lessonDto);
             }
             else{
-                lessonsByOrderAndDayOfWeek.put(timeFrameString, new LinkedHashMap<String, LessonDto>());
+                lessonsByOrderAndDayOfWeek.put(timeFrameString, new LinkedHashMap<>());
                 lessonsByOrderAndDayOfWeek.get(timeFrameString).put(dayOfWeek, lessonDto);
             }
         }

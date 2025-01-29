@@ -1,9 +1,7 @@
 package com.mkkabi.dev.repository;
 
 import com.mkkabi.dev.model.Discipline;
-import com.mkkabi.dev.model.Group;
 import com.mkkabi.dev.model.Lesson;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,13 +13,6 @@ import java.util.Optional;
 
 @Repository
 public interface LessonRepository extends JpaRepository<Lesson, Long> {
-
-    @Query(value = "select * from lessons l left join disciplines d on l.discipline_id = d.id " +
-            "left join teachers t2 on l.teacher_id = t2.id " +
-            "left join lesson_group lg on lg.lesson_id = l.id "+
-            "left join school.groups g on g.id = lg.group_id "+
-            "where l.id = ?1", nativeQuery = true)
-    Optional<Lesson> getByIdWithEverything(long id);
 
     @Query(value = "select * from lessons l " +
             "left join teachers t2 on l.teacher_id = t2.id " +

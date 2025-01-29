@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class LessonServiceImpl implements LessonService {
-    private final EntityManager entityManager;
     private final Logger logger = new AppLogger(this.getClass().getSimpleName());
 
     private LessonRepository repository;
@@ -54,7 +53,7 @@ public class LessonServiceImpl implements LessonService {
         Optional<Lesson> optional = repository.findById(id);
 
         if (optional.isPresent()) {
-            logger.info("reading lesson, found lesson " + optional.get().toString());
+            logger.info("reading lesson, found lesson " + optional.get());
             return optional.get();
         }
         logger.warning("could not find lesson with the specified ID " + id);
@@ -67,7 +66,7 @@ public class LessonServiceImpl implements LessonService {
         Optional<Lesson> optional = repository.getByIdWithTeacher(id);
 
         if (optional.isPresent()) {
-            logger.info("reading lesson, found lesson " + optional.get().toString());
+            logger.info("reading lesson, found lesson " + optional.get());
             return optional.get();
         }
         logger.warning("could not find lesson with the specified ID " + id);
@@ -82,7 +81,7 @@ public class LessonServiceImpl implements LessonService {
             Lesson oldLesson = readById(lesson.getId());
             if (oldLesson != null) {
 
-                logger.info("updating lesson id = " + lesson.getId() + " lesson toString = " + lesson.toString());
+                logger.info("updating lesson id = " + lesson.getId() + " lesson toString = " + lesson);
                 return repository.save(lesson);
             }
         }
