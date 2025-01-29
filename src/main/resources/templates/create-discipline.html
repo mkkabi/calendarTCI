@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="header.html :: head('Create New Discipline')">
+</head>
+<body>
+<div th:replace="header.html :: navbar"></div>
+
+<div class="container-fluid">
+
+    <h2>Create New Discipline</h2>
+    <form class="form-horizontal col-8" th:action="@{/disciplines/create}" th:object="${discipline}" method="post">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="semester">Semester #</label>
+            <input type="number" class="form-control col-sm-6" id="semester" placeholder="Only numbers allowed"
+                   th:field="*{semester}"/>
+            <small class="form-text text-muted warning-message" th:if="${#fields.hasErrors('semester')}"
+                   th:errors="*{semester}"></small>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-form-label col-sm-2" for="credits">Credits:</label>
+            <input type="number" class="form-control col-sm-6" id="credits" placeholder="Only numbers allowed"
+                   th:field="*{credits}"/>
+            <small class="form-text text-muted" th:if="${#fields.hasErrors('credits')}"
+                   th:errors="*{credits}"></small>
+        </div>
+
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="controlForm">Select Discipline Name:</label>
+            <select class="form-control col-sm-6" id="controlForm" name="controlForm">
+                <option>Select control Form:</option>
+                <option th:each="controlForm : ${controlForms}" th:value="${controlForm.id}"
+                        th:text="${controlForm.type}"></option>
+            </select>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="educationform">Select Education Form:</label>
+            <select class="form-control col-sm-6" id="educationform" name="education_form_id">
+                <option>Select Education Form:</option>
+                <option th:each="educationForm : ${educationForms}" th:value="${educationForm.id}"
+                        th:text="${educationForm.title}"></option>
+            </select>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="disciplineNames">Select Discipline Name:</label>
+            <select class="form-control col-sm-6" id="disciplineNames" name="discipline_name_id">
+                <option>Select disciplineNames:</option>
+                <option th:each="disciplineName : ${disciplineNames}" th:value="${disciplineName.id}"
+                        th:text="${disciplineName.name}"></option>
+            </select>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="disciplineGroup">Select group:</label>
+            <select class="form-control col-sm-6" id="disciplineGroup" name="group_id">
+                <option>Select Group:</option>
+                <option th:each="group : ${groups}" th:value="${group.id}"
+                        th:text="${group.groupNumber}"></option>
+            </select>
+        </div>
+
+
+        <div class="form-group row " th:if="${teachers!=null}">
+            <div class="group-control col-lg-9">
+            <div th:each="item : ${teachers}" class="checkbox-column float-left col-sm-4">
+                <input type="checkbox" th:value="${item.id}" th:field="*{teachers}"/>
+                <label th:text="${item.name}"></label><br/>
+            </div>
+            </div>
+        </div>
+
+        <div>
+            <input type="submit" class="btn btn-info" value="Register"/>
+            <input type="reset" class="btn btn" value="Clear"/>
+        </div>
+    </form>
+</div>
+<br/><br/><br/>
+
+
+<footer th:replace="header.html :: footer"></footer>
+</body>
+
+<script type="text/javascript">
+    $("#teachersList").find("checkbox").each(function () {
+        if ($(this).prop('checked') == true) {
+            return confirm('Are you sure?');
+        }
+    });
+</script>
+</html>

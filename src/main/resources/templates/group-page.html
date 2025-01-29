@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="header.html :: head('Group Page')">
+</head>
+<body>
+<div th:replace="header.html :: navbar"></div>
+
+<!--    Classes and IDs checked-->
+
+<div class="container-fluid">
+    <h3>Група №<th:block th:text="${group.getGroupNumber()}"/>; Тиждень <th:block th:text="${weekNumberOfStudyCalendar}"/></h3>
+    <!--    <form th:action="@{|/lessons/create/group/${group.id}|}" method="get">-->
+    <!--        <div align="right">-->
+    <!--            <input class="btn-info btn-lg" type="submit" value="Додати нову подію в календар">-->
+    <!--        </div>-->
+    <!--    </form>-->
+    <span class="calendar_navigation">
+    <a th:href="@{|/groups/${group.id}/read/${weeksToAddOrSubtractToQuery-1}|}"><span class="arrow">&#8678;</span> Previous Week </a> |
+    <a th:href="@{|/groups/${group.id}/read/${weeksToAddOrSubtractToQuery+1}|}"> Next Week <span
+            class="arrow">&#8680;</span></a> |
+        <a th:href="@{|/groups/${group.id}/open|}">Go to current week</a> |
+        <a th:href="@{|/groups/${group.id}/simple/${weeksToAddOrSubtractToQuery}|}">Open Simplified version</a> |
+        <a th:href="@{|/groups/${group.id}/duplicate/${weeksToAddOrSubtractToQuery+1}/${weekNumberOfLocalDateNowPlusWeeks}/${year}|}">Duplicate week</a> |
+    </span>
+
+
+    <script>
+        document.onselectstart = function () {
+            window.getSelection().removeAllRanges();
+        };
+        document.addEventListener('DOMContentLoaded', (event) => {
+            var dragSrcEl = null;
+            let ctrlPressed = false;
+
+
+            function handleDragStart(e) {
+                dragSrcEl = this;
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/html', this.innerHTML);
+
+                if (e.ctrlKey) {
+                    ctrlPressed = true;
+                }
+            }
+
+            function handleDragOver(e) {
+                if (e.preventDefault) {
+                    e.preventDefault();
+                }
+                e.dataTransfer.dropEffect = 'move';
+                return false;
+            }
+
+            function handleDragEnter(e) {
+                this.classList.add('over');
+            }
+
+            function handleDragLeave(e) {
+                this.classList.remove('over');
+            }
+
+            function handleDrop(e) {
+                if (e.stopPropagation) {
+                    e.stopPropagation(); // stops the browser from redirecting.
+                }
+
+
+                if (dragSrcEl != this) {
+                    dragSrcEl.innerHTML = this.innerHTML;
+                    this.innerHTML = e.dataTransfer.getData('text/html');
+
+                    var thisCellHtml = this.innerHTML;
+                    var otherCellHtml = e.dataTransfer.getData('text/html');
+
+
+                    cellOne = this;
+                    otherCell = dragSrcEl;
+
+                    console.log("item one " + this.getElementsByClassName('postdatacell')[0].innerHTML)
+                    console.log("item two " + dragSrcEl.getElementsByClassName('postdatacell')[0].innerHTML)
+                    // url = "[[@{api/groups/testpost}]]";
+                    itemOne = this.getElementsByClassName('postdatacell')[0].innerHTML;
+                    itemTwo = dragSrcEl.getElementsByClassName('postdatacell')[0].innerHTML;
+                    url = "http://localhost:8080/api/groups/testpost";
+                    // csrfValue = $("input[name='_csrf']").val();
+                    console.log("ctrlPressed = " + ctrlPressed)
+                    params = {lesson1Html: itemOne, lesson2Html: itemTwo, ctrlPressed: ctrlPressed};
+
+                    $.post(url, params, function (response) {
+                        if (response == "OK") {
+                            console.log("success")
+
+                            // dragSrcEl.innerHTML = thisCellHtml;
+                            this.innerHTML = otherCellHtml;
+
+                            cellOne.style.color = 'green';
+                            otherCell.style.color = 'green';
+                        } else if (response.split(';')[0] === "DUPLICATED") {
+                            console.log("DUPLICATED")
+                            cellOne.style.color = 'red';
+                            otherCell.style.color = 'red';
+
+                            cellOne.getElementsByClassName('postdatacell')[0].style.display = 'block';
+                            cellOne.getElementsByClassName('postdatacell')[0].innerHTML = response.split(';')[1];
+                        }
+                    });
+                }
+
+                return false;
+            }
+
+            function handleDragEnd(e) {
+
+                items.forEach(function (item) {
+                    item.classList.remove('over');
+
+                });
+            }
+
+
+            let items = document.querySelectorAll('.draggable-item-container .draggable-item');
+            items.forEach(function (item) {
+                item.addEventListener('dragstart', handleDragStart, false);
+                item.addEventListener('dragenter', handleDragEnter, false);
+                item.addEventListener('dragover', handleDragOver, false);
+                item.addEventListener('dragleave', handleDragLeave, false);
+                item.addEventListener('drop', handleDrop, false);
+                item.addEventListener('dragend', handleDragEnd, false);
+            });
+        });
+    </script>
+
+    <!--    <br>=========lessonsByTimeFrameAndLocalDate========<br>-->
+    <!--    <th:block th:text="${lessonsByTimeFrameAndLocalDate}"/>-->
+    <!--    <br>=========weekDatesList========<br>-->
+    <!--    <th:block th:text="${weekDatesList}"/>-->
+    <!--    <br>========daysOfQueryWeekWithDates=========<br>-->
+    <!--    <th:block th:text="${daysOfQueryWeekWithDates}"/>-->
+    <!--    <br>=================<br>-->
+    <!--    <th:block th:text="${#temporals.format(timeFramesList.get(0).getStartTime(),'HH:mm')+' - '+#temporals.format(timeFramesList.get(0).getEndTime(),'HH:mm')}"/>-->
+    <th:block th:text="${weekNumberOfLocalDateNowPlusWeeks}"/>
+    <div class="table-responsive">
+        <table class="tg table table-bordered table-striped table-hover table-sm draggable-item-container">
+            <tbody>
+            <tr scope="row">
+                <th class="tg-0lax upright-text" rowspan="2">Місяць</th>
+                <th class="tg-0lax upright-text" rowspan="2">Дата</th>
+                <th class="tg-cly1 upright-text" rowspan="2">№ пари</th>
+                <th class="tg-0lax" rowspan="2">Час</th>
+                <th class="tg-0lax" colspan="6">Дні тижня / дисципліни</th>
+            </tr>
+
+            <tr scope="row">
+                <th:block th:if="${daysOfQueryWeekWithDates!=null}" th:each="day: ${daysOfQueryWeekWithDates}">
+                    <th class="tg-0lax">
+                        <span th:text="${day.key}"/><br/><span th:text="${day.value}"/>
+                    </th>
+                </th:block>
+            </tr>
+
+            <th:block th:each="i: ${#numbers.sequence(0, timeFramesList.size()-1)}">
+                <tr scope="row">
+                    <th:block th:if="${i==0}">
+                        <th class="tg-0lax reverse bottom-top" rowspan="6"
+                            th:text="${monthOfTheWeekOfQuery+' ('+weekNumberOfStudyCalendar + ' тиждень)'}">Місяць
+                            (25тиждень)
+                        </th>
+                        <th class="tg-0lax reverse bottom-top" rowspan="6"
+                            th:text="${#temporals.format(weekDatesList.get(0), 'yyyy-MM-dd')+' - '+
+                                #temporals.format(weekDatesList.get(weekDatesList.size()-1), 'yyyy-MM-dd')}">
+                            Monday date - Saturday date
+                        </th>
+                    </th:block>
+                    <th:block th:if="${lessonsByTimeFrameAndLocalDate.size()>0}">
+                        <td class="tg-0lax text-middle-justify"
+                            th:text="${timeFramesList.get(i).getOrderNumber()}"></td>
+                        <td class="tg-0lax text-middle-justify" th:text="${#temporals.format(timeFramesList.get(i).getStartTime(),'HH:mm')+' - '+
+                            #temporals.format(timeFramesList.get(i).getEndTime(),'HH:mm')}">time
+                        </td>
+
+                        <th:block th:each="y: ${#numbers.sequence(0, 5)}">
+
+                            <!--                                <th:block th:with="lesson=${lessonsByTimeFrameAndLocalDate.get(timeFramesList.get(i).getStartTime()+' - '+timeFramesList.get(i).getEndTime()).get(weekDatesList.get(y))}">-->
+                            <th:block th:with="lesson=${lessonsByTimeFrameAndLocalDate.get(
+                                #temporals.format(timeFramesList.get(i).getStartTime(),'HH:mm')+' - '+#temporals.format(timeFramesList.get(i)
+                                .getEndTime(),'HH:mm')).get(weekDatesList.get(y))}">
+                                <th:block th:if="${lesson!=null}">
+                                    <td class="tg-0lax draggable-item"
+                                        th:styleappend="${lesson.isOnline()}?'background-color:'+${onlineClassColor}:'background-color:'+${lesson.classTypeColor}">
+                                        <a class="icon-delete"
+                                           th:href="@{|/lessons/${lesson.id}/delete?urlFrom=${'/groups/'+group.id+'/read/'+weeksToAddOrSubtractToQuery}|}"
+                                           onclick="return confirm('Are you sure?');">&#215;</a>
+                                        <br/>
+                                        <span th:if="${lesson.getDiscipline()!=null && !lesson.getDiscipline().isEmpty()}"
+                                              th:text="${lesson.discipline}"/><br>
+                                        <!--                                            <span th:if="${lesson.getGroupNumber()!=null && lesson.getGroupNumber()!=0}" th:text="${'Група: '+lesson.groupNumber}"/><br>-->
+                                        <span th:if="${lesson.getTeacher()!=null}"
+                                              th:text="${'Викладач : '+lesson.teacher}"/><br>
+                                        <span th:if="${lesson.isOnline()}">ONLINE!</span><br>
+                                        <span th:if="${lesson.auditoriumNumber!=null && !lesson.auditoriumNumber.isEmpty()}"
+                                              th:text="${'Аудиторія '+lesson.auditoriumNumber}"/><br>
+                                        <span th:if="${lesson.showClassTypeOnSchedule}"
+                                              th:text="${lesson.classType}"/><br>
+                                        <span style="display: none;"
+                                              class="postdatacell"><th:block th:text="${'id:'+lesson.id}"/></span>
+
+                                    </td>
+
+                                </th:block>
+                                <th:block th:if="${lesson==null}">
+                                    <td class="tg-0lax draggable-item">
+                                        <span style="display: none" class="postdatacell"><th:block
+                                                th:text="${'timeFrameId:'+timeFramesList.get(i).id+';startDate:'}+${#temporals.format(weekDatesList.get(y), 'yyyy-MM-dd')}"/></span>
+                                        <a th:title="'lesson for date '+ ${#temporals.format(weekDatesList.get(y), 'yyyy-MM-dd')+' and time '+timeFramesList.get(i).getStartTime()}"
+                                           th:href="@{|/lessons/create/group/${group.id}/${timeFramesList.get(i).id}/${#temporals.format(weekDatesList.get(y), 'yyyy-MM-dd')}|}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 fill="#bbc2c9" class="bi bi-bag-plus" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd"
+                                                      d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0v-1.5H6a.5.5 0 0 1 0-1h1.5V8a.5.5 0 0 1 .5-.5z"/>
+                                                <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"/>
+                                            </svg>
+                                        </a>
+                                    </td>
+                                </th:block>
+                            </th:block>
+                        </th:block>
+                    </th:block>
+                </tr>
+            </th:block>
+            </tbody>
+        </table>
+    </div>
+
+    <section style="background-color: #817a4e;">
+        <div class="container py-5">
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card text-white bg-dark mb-4">
+                        <div class="card-body text-center">
+                            <img class="rounded-circle img-fluid" alt="avatar" style="width: 150px;"
+                                 th:src="@{/images/group-class.png}">
+                            <h5 class="my-3">
+                                <span th:text="${'Номер групи: '+group.groupNumber}"/>
+                            </h5>
+                            <div class="d-flex justify-content-center mb-2">
+                                <a class="btn btn-primary" th:href="@{'/groups/'+${group.id}+'/update'}"
+                                   type="button">Update</a>
+                                <!--                                <a class="btn btn-outline-primary ms-1" style="margin-left:10px" type="button"-->
+                                <!--                                   onclick="return confirm('Are you sure?');"-->
+                                <!--                                   th:href="@{'/groups/'+${group.id}+'/delete'}">Delete</a>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card text-white bg-dark mb-4">
+                        <div class="card-body">
+                        <br><br><br><br><br><br><br><br><br>
+                            <!--                            <div th:replace="events-weekly :: eventstable"></div>-->
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<th:block th:text="${path}"/>
+
+
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<footer th:replace="header.html :: footer"></footer>
+
+
+</body>
+</html>

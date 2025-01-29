@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="header.html :: head('Create New Teacher')">
+</head>
+<body>
+<div th:replace="header.html :: navbar"></div>
+
+<!--    Classes and IDs and Types checked-->
+
+<div class="container-fluid">
+
+    <h2>Create New Teacher</h2>
+    <form class="form-horizontal col-8" th:action="@{/teachers/create}" th:object="${newTeacher}" method="post">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="fio">First Name</label>
+            <input type="text" class="form-control col-sm-6" id="fio" placeholder="FIO"
+                   th:field="*{fio}"/>
+            <small class="form-text text-muted" th:if="${#fields.hasErrors('fio')}"
+                   th:errors="*{fio}"></small>
+        </div>
+
+<!--        <div class="form-group row">-->
+<!--            <label class="col-sm-2 col-form-label" for="fathersName">Middle Name</label>-->
+<!--            <input type="text" class="form-control col-sm-6" id="fathersName" placeholder="Middle name, starts with capital"-->
+<!--                   th:field="*{fathersName}"/>-->
+<!--            <small class="form-text text-muted" th:if="${#fields.hasErrors('fathersName')}"-->
+<!--                   th:errors="*{fathersName}"></small>-->
+<!--        </div>-->
+
+<!--        <div class="form-group row">-->
+<!--            <label class="col-sm-2 col-form-label" for="lastName">Last Name</label>-->
+<!--            <input type="text" class="form-control col-sm-6" id="lastName" placeholder="Last name, starts with capital"-->
+<!--                   th:field="*{lastName}"/>-->
+<!--            <small class="form-text text-muted" th:if="${#fields.hasErrors('lastName')}"-->
+<!--                   th:errors="*{lastName}"></small>-->
+<!--        </div>-->
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="contact">Contact</label>
+            <input type="text" class="form-control col-sm-6" id="contact" placeholder="Contact"
+                   th:field="*{contact}"/>
+            <small class="form-text text-muted" th:if="${#fields.hasErrors('contact')}"
+                   th:errors="*{contact}"></small>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="commentWishes">Comments/Wishes</label>
+            <input type="text" class="form-control col-sm-6" id="commentWishes" placeholder="Teacher's wishes or other notes"
+                   th:field="*{commentWishes}"/>
+            <small class="form-text text-muted" th:if="${#fields.hasErrors('commentWishes')}"
+                   th:errors="*{commentWishes}"></small>
+        </div>
+
+
+<!--        <div class="form-group row mt-2">-->
+<!--            <label class="col-sm-4 col-form-label">Disciplines: </label>-->
+<!--            <div class="col-sm-8" id="disciplines" th:if="${disciplines!=null}">-->
+<!--                <th:block th:each="discipline : ${disciplines}">-->
+<!--                    <input type="checkbox" th:field="*{disciplines}" th:text="${discipline.id+' '+discipline.name}" th:value="${discipline.id}" class="m-2"/>-->
+<!--                    - <small th:text="${discipline.educationForm}"></small><br/>-->
+<!--                </th:block>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div class="form-group row mt-2">-->
+<!--            <label class="col-sm-4 col-form-label">Groups: </label>-->
+<!--            <div class="col-sm-8" id="groups" th:if="${groups!=null}">-->
+<!--                <th:block th:each="group : ${groups}">-->
+<!--                    <input type="checkbox" th:field="*{groups}" th:text="${group.id+', course #'+group.courseNumber}" th:value="${group.id}" class="m-2"/>-->
+<!--                    - <small th:text="${group.educationForm}"></small><br/>-->
+<!--                </th:block>-->
+<!--            </div>-->
+<!--        </div>-->
+
+        <div>
+            <input type="submit" class="btn btn-info" value="Register"/>
+            <input type="reset" class="btn btn" value="Clear"/>
+        </div>
+    </form>
+</div>
+<br/><br/><br/>
+
+
+<footer th:replace="header.html :: footer"></footer>
+</body>
+
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="header.html :: head('Weekly events')">
+</head>
+<body>
+<div th:replace="header.html :: navbar"></div>
+
+<div class="container-fluid">
+    <div class="container">
+        <div align="right">
+            <form th:action="@{/lessons/check-duplicates/}" method="get">
+            <input class="btn-info btn-lg" type="submit" value="Check Duplicate lessons">
+            </form>
+        </div>
+
+        <table class="table" th:if="${lessonsDto!=null}">
+            <h1>Lessons that clash for Teacher</h1>
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Group Number</th>
+                <th scope="col">Discipline</th>
+                <th scope="col">Teacher</th>
+                <th scope="col">Time Start</th>
+                <th scope="col">Time End</th>
+                <th scope="col">Week Number</th>
+                <th scope="col">Month</th>
+                <th scope="col">Date</th>
+                <th scope="col">More</th>
+                <th scope="col" colspan="2">Operations</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="lesson : ${lessonsDto}">
+                <td th:text="${lesson.id}"/>
+                <td th:text="${lesson.groups}"/>
+                <td th:text="${lesson.discipline}"/>
+                <td th:text="${lesson.teacher}" />
+                <td th:text="${lesson.timeStart}" />
+                <td th:text="${lesson.timeEnd}" />
+                <td th:text="${lesson.weekNumber}" />
+                <td th:text="${lesson.month}" />
+                <td th:text="${lesson.dateStart}" />
+                <td>
+                    <a th:href="@{|/lessons/${lesson.id}/open|}">More information</a>
+                </td>
+                <td>
+                    <a th:href="@{|/lessons/${lesson.id}/edit|}">Edit </a>|
+                    <!--                <a class="delete" th:href="@{|/lessons/${lesson.id}/delete|}" onclick="return confirm('Are you sure?');"> Delete</a>-->
+                </td>
+            </tr>
+        </table>
+
+        <table class="table" th:if="${lessonsDtoGroup!=null}">
+            <h1>Lessons that clash for Group</h1>
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Group Number</th>
+                <th scope="col">Discipline</th>
+                <th scope="col">Teacher</th>
+                <th scope="col">Time Start</th>
+                <th scope="col">Time End</th>
+                <th scope="col">Week Number</th>
+                <th scope="col">Month</th>
+                <th scope="col">Date</th>
+                <th scope="col">More</th>
+                <th scope="col" colspan="2">Operations</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="lesson : ${lessonsDtoGroup}">
+                <td th:text="${lesson.id}"/>
+                <td th:text="${lesson.groups}"/>
+                <td th:text="${lesson.discipline}"/>
+                <td th:text="${lesson.teacher}" />
+                <td th:text="${lesson.timeStart}" />
+                <td th:text="${lesson.timeEnd}" />
+                <td th:text="${lesson.weekNumber}" />
+                <td th:text="${lesson.month}" />
+                <td th:text="${lesson.dateStart}" />
+                <td>
+                    <a th:href="@{|/lessons/${lesson.id}/open|}">More information</a>
+                </td>
+                <td>
+                    <a th:href="@{|/lessons/${lesson.id}/edit|}">Edit </a>|
+                    <!--                <a class="delete" th:href="@{|/lessons/${lesson.id}/delete|}" onclick="return confirm('Are you sure?');"> Delete</a>-->
+                </td>
+            </tr>
+        </table>
+
+    </div>
+</div>
+
+
+<br/><br/><br/><br/>
+<footer th:replace="header.html :: footer"></footer>
+</body>
+</html>

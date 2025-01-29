@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="header.html :: head('Schedulre Page')">
+</head>
+<body>
+
+
+<!--    Classes and IDs checked-->
+
+<div class="mt-3 ml-2 mr-2">
+    <br><br><br><br><br>
+    <div class="simple-table-head">
+        <table>
+            <tbody>
+            <tr>
+                <td></td>
+                <td colspan="2">ЗАТВЕРДЖЕНО</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td colspan="2">Ректор «ВДНЗ «ТХІ»</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Валентин СИНІЙ</td>
+                <td>Підпись</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>31.08.2022</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="clear"></div>
+</div>
+<br>
+<div class="simple-table-header">
+<h4>Щотижневий розклад навчальних занять</h4>
+<h4>студентів
+    <th:block th:text="${group.courseNumber}"/>
+    курсу денної форми навчання за ОП «БОГОСЛОВ'Я»
+</h4>
+
+</div>
+<div class="table-responsive">
+    <table class="table table-bordered table-sm">
+        <tbody>
+        <tr scope="row">
+            <th class="tg-0lax upright-text" rowspan="2">Місяць</th>
+            <th class="tg-0lax upright-text date-col" rowspan="2">Дата</th>
+            <th class="tg-cly1 upright-text" rowspan="2">№ пари</th>
+            <th class="tg-0lax" rowspan="2">Час</th>
+            <th class="tg-0lax" colspan="6">Дні тижня / дисципліни</th>
+        </tr>
+
+        <tr scope="row">
+            <th:block th:if="${daysOfQueryWeekWithDates!=null}" th:each="day: ${daysOfQueryWeekWithDates}">
+                <th class="tg-0lax">
+                    <span th:text="${day.key}"/><br/><span th:text="${day.value}"/>
+                </th>
+            </th:block>
+        </tr>
+
+        <th:block th:each="i: ${#numbers.sequence(0, timeFramesList.size()-1)}">
+            <tr scope="row">
+                <th:block th:if="${i==0}">
+                    <th class="tg-0lax reverse bottom-top date-col" rowspan="6"
+                        th:text="${monthOfTheWeekOfQuery+' ('+weekNumberOfStudyCalendar + ' тиждень)'}">Місяць
+                        (25тиждень)
+                    </th>
+                    <th class="tg-0lax reverse bottom-top date-col" rowspan="6"
+                        th:text="${#temporals.format(weekDatesList.get(0), 'yyyy-MM-dd')+' - '+
+                                #temporals.format(weekDatesList.get(weekDatesList.size()-1), 'yyyy-MM-dd')}">
+                        Monday date - Saturday date
+                    </th>
+                </th:block>
+                <th:block th:if="${lessonsByTimeFrameAndLocalDate.size()>0}">
+                    <td class="tg-0lax text-middle-justify" th:text="${timeFramesList.get(i).getOrderNumber()}"></td>
+                    <td class="tg-0lax text-middle-justify" th:text="${#temporals.format(timeFramesList.get(i).getStartTime(),'HH:mm')+' - '+
+                            #temporals.format(timeFramesList.get(i).getEndTime(),'HH:mm')}">time
+                    </td>
+
+                    <th:block th:each="y: ${#numbers.sequence(0, 5)}">
+
+                        <!--                                <th:block th:with="lesson=${lessonsByTimeFrameAndLocalDate.get(timeFramesList.get(i).getStartTime()+' - '+timeFramesList.get(i).getEndTime()).get(weekDatesList.get(y))}">-->
+                        <th:block th:with="lesson=${lessonsByTimeFrameAndLocalDate.get(
+                                #temporals.format(timeFramesList.get(i).getStartTime(),'HH:mm')+' - '+#temporals.format(timeFramesList.get(i)
+                                .getEndTime(),'HH:mm')).get(weekDatesList.get(y))}">
+                            <th:block th:if="${lesson!=null}">
+                                <td th:styleappend="${lesson.isOnline()}?'background-color:'+${onlineClassColor}:'background-color:'+${lesson.classTypeColor}">
+                                    <span th:if="${lesson.getDiscipline()!=null && !lesson.getDiscipline().isEmpty()}">
+                                        <b><span th:text="${lesson.discipline}"></span></b></b><br></span>
+<!--                                    <span th:if="${lesson.getGroupNumber()!=null && lesson.getGroupNumber()!=0}"-->
+<!--                                          th:text="${'Група: '+lesson.groupNumber}"/><br>-->
+                                    <span th:if="${lesson.getTeacher()!=null}">
+                                        <i><span th:text="${'Викладач: '+lesson.teacher}"/></i><br></span>
+                                    <span th:if="${lesson.isOnline()}">ONLINE!<br></span>
+                                    <span th:if="${lesson.auditoriumNumber!=null && !lesson.auditoriumNumber.isEmpty()}">
+                                          <span th:text="${'Аудиторія '+lesson.auditoriumNumber}"/><br></span>
+                                    <span th:if="${lesson.showClassTypeOnSchedule}"> <span th:text="${lesson.classType}"/><br></span>
+                                    <span style="display: none;"
+                                          class="postdatacell"><th:block th:text="${'id:'+lesson.id}"/></span>
+
+                                </td>
+
+                            </th:block>
+                            <th:block th:if="${lesson==null}">
+                                <td class=" ">
+                                            <span style="display: none"
+                                                  class="postdatacell"><th:block
+                                                    th:text="${'timeFrameId:'+timeFramesList.get(i).id+';startDate:'}"/><th:block
+                                                    th:text="${#temporals.format(weekDatesList.get(y), 'yyyy-MM-dd')}"/></span>
+                                </td>
+                            </th:block>
+                        </th:block>
+                    </th:block>
+                </th:block>
+            </tr>
+        </th:block>
+        </tbody>
+    </table>
+<!--    <img class="stamp" alt="stamp" th:src="@{/images/stamp.png}">-->
+<!--    <img class="signature" alt="signature" th:src="@{/images/signature.png}">-->
+</div>
+</div>
+
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="header.html :: head('Create New Group')">
+</head>
+<body>
+<div th:replace="header.html :: navbar"></div>
+
+<!--    Classes and IDs and Types checked-->
+
+
+<div class="container-fluid">
+
+  <h2>Create New Group</h2>
+  <form class="form-horizontal col-8" th:action="@{|/groups/${id}/edit|}" th:object="${updateGroup}" method="post">
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="admittanceYear">Admittance Year</label>
+      <input type="number" class="form-control col-sm-6" id="admittanceYear" placeholder="Only numbers allowed"
+             th:field="*{admittanceYear}"/>
+      <small class="form-text text-muted" th:if="${#fields.hasErrors('admittanceYear')}"
+             th:errors="*{admittanceYear}"></small>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="courseNumber">Course Number</label>
+      <input type="number" class="form-control col-sm-6" id="courseNumber" placeholder="Only numbers allowed"
+             th:field="*{courseNumber}"/>
+      <small class="form-text text-muted" th:if="${#fields.hasErrors('courseNumber')}"
+             th:errors="*{courseNumber}"></small>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="groupNumber">Group Number</label>
+      <input type="text" class="form-control col-sm-6" id="groupNumber" placeholder="Text"
+             th:field="*{groupNumber}"/>
+      <small class="form-text text-muted" th:if="${#fields.hasErrors('groupNumber')}"
+             th:errors="*{groupNumber}"></small>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="alternativeName">Alternative Group Name</label>
+      <input type="text" class="form-control col-sm-6" id="alternativeName"
+             th:field="*{alternativeName}"/>
+    </div>
+
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="sessionStart">Session Start:</label>
+      <input type="date" class="col-sm-6 form-control" th:field="*{sessionStart}"
+             id="sessionStart"/>
+      <small class="form-text text-muted" th:if="${#fields.hasErrors('sessionStart')}"
+             th:errors="*{sessionStart}"></small>
+    </div>
+
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="sessionEnd">Session End:</label>
+      <input type="date" class="col-sm-6 form-control" th:field="*{sessionEnd}"
+             id="sessionEnd"/>
+      <small class="form-text text-muted" th:if="${#fields.hasErrors('sessionEnd')}"
+             th:errors="*{sessionEnd}"></small>
+    </div>
+
+<!--    <div class="form-group row">-->
+<!--      <label class="col-sm-2 col-form-label" for="educationForm">Education Form:</label>-->
+<!--      <select class="form-control col-sm-6" id="educationForm" name="educationForm" th:if="${educationForms!=null}">-->
+<!--        <option value="0">Select Education Form:</option>-->
+<!--        <option th:each="educationForm : ${educationForms}" th:value="${educationForm.id}"-->
+<!--                th:text="${educationForm.title}"></option>-->
+<!--      </select>-->
+<!--    </div>-->
+
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="educationForm">Education Form:</label>
+
+        <select class="form-control col-sm-6" id="educationForm" name="educationForm" th:if="${educationForms!=null}">
+                                    <span  th:each="educationForm : ${educationForms}">
+                                        <option th:if="${educationForm!=null && updateGroup.getEducationForm().getId() == educationForm.id}" th:selected="${true}"
+                                                th:value="${educationForm.id}" th:text="${educationForm.getTitle()}"/>
+                                        <option th:if="${educationForm==null || educationForm!=null && educationForm.id != updateGroup.getEducationForm().getId()}"
+                                                th:value="${educationForm.id}" th:text="${educationForm.getTitle()}" />
+                                    </span>
+        </select>
+
+    </div>
+
+<!--    <div class="form-group row mt-2">-->
+<!--      <label class="col-sm-4 col-form-label">Disciplines: </label>-->
+<!--      <div class="col-sm-8" th:if="${disciplines!=null}">-->
+<!--        <th:block th:each="discipline : ${disciplines}">-->
+<!--          <input type="checkbox" th:field="*{disciplines}" th:text="${discipline.name}" th:value="${discipline.id}" class="m-2"/>-->
+<!--          - <small th:text="${discipline.educationForm}"></small><br/>-->
+<!--        </th:block>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--            <div class="form-group row mt-2">-->
+<!--                <label class="col-sm-4 col-form-label">Teachers: </label>-->
+<!--                <div class="col-sm-8" th:if="${teachers!=null}">-->
+<!--                    <th:block th:each="teacher : ${teachers}">-->
+<!--                        <input type="checkbox" th:field="*{teachers}" th:text="${teacher.name}" th:value="${teacher.id}" class="m-2"/>-->
+<!--                        - <small th:text="${teacher.id}"></small><br/>-->
+<!--                    </th:block>-->
+<!--                </div>-->
+<!--            </div>-->
+
+    <div>
+      <input type="submit" class="btn btn-info" value="Register"/>
+      <input type="reset" class="btn btn" value="Clear"/>
+    </div>
+  </form>
+</div>
+<br/><br/><br/>
+</body>
+</html>

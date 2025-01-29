@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="header.html :: head('Home Page')">
+</head>
+<body>
+<div th:replace="header.html :: navbar"></div>
+
+<!--    Classes and IDs checked-->
+
+<div class="container-fluid">
+    <h1>User Info</h1>
+    <section style="background-color: #eee;">
+        <div class="container py-5">
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <img class="rounded-circle img-fluid" alt="avatar" style="width: 150px;"
+                                 th:src="@{/images/male-avatar.svg}">
+                            <h5 class="my-3">
+                                <span th:text="${user.firstName}"/>
+                                <span th:text="${user.lastName}"/>
+                            </h5>
+                            <p class="text-muted mb-4" th:text="${user.role.name}">Role</p>
+                            <div class="d-flex justify-content-center mb-2">
+                                <a class="btn btn-primary" th:href="@{'/users/'+${user.id}+'/update'}" type="button">Update</a>
+                                <a class="btn btn-outline-primary ms-1" style="margin-left:10px" type="button"
+                                   onclick="return confirm('Are you sure?');"
+                                   th:href="@{'/users/'+${user.id}+'/delete'}">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div th:replace="events-weekly :: eventstable"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <h4>Events for dates of week <span th:text="${studyWeek}"/></h4>
+    <form th:action="@{|/events/create/users/${user.id}|}" method="get">
+        <div align="right">
+            <input class="btn-info btn-lg" type="submit" value="Додати нову подію в календар">
+        </div>
+    </form>
+    <a th:href="@{|/users/${user.id}/read/${weekOfYear-1}|}">< Previous Week </a> |
+    <a th:href="@{|/users/${user.id}/read/${weekOfYear+1}|}"> Next Week ></a>
+    <table class="table calendar">
+        <thead>
+        <tr class="day-names">
+            <th scope="col">Month</th>
+            <th scope="col">Date</th>
+            <th scope="col">#</th>
+            <th scope="col">Time</th>
+            <th scope="col">Неділя</th>
+            <th scope="col">Понеділок</th>
+            <th scope="col">Вівторок</th>
+            <th scope="col">Середа</th>
+            <th scope="col">Четвер</th>
+            <th scope="col">П'ятниця</th>
+            <th scope="col">Субота</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <th:block th:each="map, iStat: ${eventMap}">
+            <tr th:each="e : ${map}">
+                <!--                <td class="time" th:text="${e.key}">Month</td>-->
+                <td class="time month">Лютий (25 тиждень)</td>
+                <!--                <td class="time" th:text="${e.key}">Date</td>-->
+                <td class="time date">13.02.2023 - 20.02.2023</td>
+                <td th:text="${iStat.index + 1}"/>
+
+                <td class="time" th:text="${e.key}"></td>
+                <th:block th:each="day : ${weekdays}">
+                    <td class="days">
+                        <th:block th:each="event : ${e.value}">
+                            <div class="event" th:if="${event.dayOfWeek == day}">
+                                <div class="dates dark-green">
+                                    <div class="date-duration">
+                                        <span class="icon filter-blue"><img class="calendar-icon"
+                                                                            th:src="@{/images/calender.svg}"/></span>
+                                        <span th:text="${#temporals.format(event.startTime, 'dd.MM')+' - '+#temporals.format(event.endTime, 'dd.MM')}"></span>
+                                    </div>
+                                    <div class="hours-duration">
+                                        <span class="icon filter-blue"><img class="calendar-icon"
+                                                                            th:src="@{/images/clock.svg}"/></span>
+                                        <span th:text="${#temporals.format(event.startTime, 'HH:mm')+' - '+#temporals.format(event.endTime, 'HH:mm')}"></span>
+                                    </div>
+
+                                    <!--                                    <div class="date date-start"-->
+                                    <!--                                         th:text="${#temporals.format(event.startTime, 'dd.MM HH:mm')}"></div>-->
+                                    <!--                                    <div class="date date-end"-->
+                                    <!--                                         th:text="${#temporals.format(event.endTime, 'dd.MM HH:mm')}"></div>-->
+                                </div>
+                                <span class="event-body">
+                                    <span class="event-title" th:text="${event.title}"></span>
+                                    <span class="event-action">
+                                        <a class="edit filter-blue" title="Edit"><img class="calendar-icon"
+                                                                                      th:src="@{/images/edit.svg}"/></a>
+                                        <br>
+                                        <a class="edit filter-blue" title="Open"><img class="calendar-icon"
+                                                                                      th:src="@{/images/open.svg}"/></a>
+                                        <br>
+                                        <a class="delete calendar-icon filter-red"
+                                           th:href="@{|/events/delete/${event.id}|}"
+                                           onclick="return confirm('Are you sure?');" title="Delete"><img
+                                                th:src="@{/images/delete.svg}"/></a>
+                                    </span>
+                                </span>
+
+                                <div class="event-users">
+                                    <div class="owner">
+                                        <img class="calendar-icon" th:src="@{/images/owner.svg}"/>
+                                        <a th:href="@{|/users/${event.owner.id}/read|}" target="_blank">
+                                            <span class="event-owner" th:text="${event.owner.firstName}"></span>
+                                        </a>
+                                    </div>
+                                    <div class="participants">
+                                        <img class="calendar-icon" th:src="@{/images/team.svg}"/>
+                                        <th:block th:each="participant : ${event.attendees}">
+
+                                            <a th:href="@{|/users/${participant.id}/read|}" target="_blank">
+                                                <span class="participant" th:text="${participant.firstName}"></span>
+                                            </a>
+
+                                        </th:block>
+                                    </div>
+                                </div>
+                            </div>
+                        </th:block>
+                    </td>
+                </th:block>
+            </tr>
+        </th:block>
+        </tbody>
+
+    </table>
+</div>
+
+
+<footer th:replace="header.html :: footer"></footer>
+</body>
+</html>

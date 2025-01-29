@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="header.html :: head('Weekly disciplines hours')">
+</head>
+<body>
+<div th:replace="header.html :: navbar"></div>
+<div class="col-md-offset-2 col-sm-8">
+
+  <div th:fragment="weeklyDisciplineForTeacher">
+    <h4 th:text="${'Weekly events of ' + teacher.name}"/>
+    <br>
+    <table class="table">
+      <tr>
+        <th>No.</th>
+        <th>Id</th>
+        <th>Title</th>
+        <th>hours taught this week</th>
+        <th>hours taught this month</th>
+        <th>Total hours</th>
+        <th>hours left</th>
+      </tr>
+
+      <tr th:each="discipline, iStat: ${mapOfWeeklyDisciplinesHours}">
+        <td th:text="${iStat.index + 1}"/>
+        <td th:text="${discipline.key}"/>
+        <td><a th:text="${discipline.value}"/></td>
+
+      </tr>
+    </table>
+  </div>
+
+</div>
+
+</body>
+</html>

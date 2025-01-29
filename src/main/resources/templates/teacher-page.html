@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="header.html :: head('Teacher Page')">
+</head>
+<body>
+<div th:replace="header.html :: navbar"></div>
+
+<!--    Classes and IDs checked-->
+
+<div class="container-fluid">
+    <h1>Teacher Info Page</h1>
+    <section style="background-color: #817a4e;">
+        <div class="container py-5">
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card text-white bg-dark mb-4">
+                        <div class="card-body text-center">
+                            <img class="rounded-circle img-fluid" alt="avatar" style="width: 150px;"
+                                 th:src="@{/images/professor.png}">
+                            <h5 class="my-3">
+                                <span th:text="${teacher.getName()}"/>
+                            </h5>
+                            <div th:if="${teacher.contact!=null && !teacher.contact.isEmpty()}" th:text="${teacher.contact}"></div>
+                            <div th:if="${teacher.commentWishes!=null}" th:text="${teacher.commentWishes}"></div>
+                            <div class="d-flex justify-content-center mb-2">
+                                <a class="btn btn-primary" th:href="@{'/teachers/'+${teacher.id}+'/update'}"
+                                   type="button">Update</a>
+<!--                                <a class="btn btn-outline-primary ms-1" style="margin-left:10px" type="button"-->
+<!--                                   onclick="return confirm('Are you sure?');"-->
+<!--                                   th:href="@{'/teachers/'+${teacher.id}+'/delete'}">Delete</a>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-8">
+                    <div class="col">
+                        <div class="card text-white bg-dark mb-4">
+                            <div class="card-body">
+
+                                <div th:fragment="weeklyDisciplineForTeacher">
+                                    <h5 th:text="${'Weekly lessons of ' + teacher.name}"/>
+                                    <br>
+                                    <table class="table">
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Lessons count</th>
+                                            <th>Title</th>
+                                            <th>hours taught this week</th>
+                                            <th>Total hours</th>
+                                            <th>hours left</th>
+                                        </tr>
+
+                                        <tr th:each="discipline: ${mapOfDiscIdsToDisciplineUtil}">
+                                            <td th:text="${discipline.getKey()}"/>
+                                            <td th:text="${discipline.value.count}"/>
+                                            <td><a th:text="${discipline.value.title}"/></td>
+                                            <td><a th:text="${discipline.value.hoursTaught}"/></td>
+                                            <td><a th:text="${discipline.value.totalDisciplineHours}"/></td>
+                                            <td><a th:text="${discipline.value.countHoursLeft()}"/></td>
+
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="card text-white bg-dark mb-4">
+                            <div class="card-body">
+
+                                <div th:fragment="monthlyDisciplineForTeacher">
+                                    <h5 th:text="${'Monthly lessons of ' + teacher.name}"/>
+                                    <br>
+                                    <table class="table">
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Lessons count</th>
+                                            <th>Title</th>
+                                            <th>hours taught this Month</th>
+                                            <th>Total hours</th>
+                                            <th>hours left</th>
+                                        </tr>
+
+                                        <th:block th:with="totalMonthHours=0">
+                                            <tr th:each="discipline: ${mapOfMonthlyDiscIdsToDisciplineUtil}">
+                                                <td th:text="${discipline.getKey()}"/>
+                                                <td th:text="${discipline.value.count}"/>
+                                                <td><a th:text="${discipline.value.title}"/></td>
+                                                <td><a th:text="${discipline.value.hoursTaught}"/></td>
+                                                <td><a th:text="${discipline.value.totalDisciplineHours}"/></td>
+                                                <td><a th:text="${discipline.value.countHoursLeft()}"/></td>
+                                                <th:block th:with="totalMonthHours=${totalMonthHours+discipline.value.hoursTaught}"/>
+                                            </tr>
+                                            <tr th:text="${'total Hours taught = '+totalMonthHours}"/>
+                                        </th:block>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <h4>Events for dates of week <span th:text="${weekNumberOfStudyCalendar}"/></h4>
+    <form th:action="@{|/lessons/create/teacher-off/${teacher.id}|}" method="get">
+        <div align="right">
+            <input class="btn-info btn-lg" type="submit" value="Додати відпустку в календар">
+        </div>
+    </form>
+
+    <div class="calendar_navigation">
+    <a th:href="@{|/teachers/${teacher.id}/read/${weeksToAddOrSubtractToQuery-1}|}"><span class="arrow">&#8678;</span> Previous Week </a> |
+    <a th:href="@{|/teachers/${teacher.id}/read/${weeksToAddOrSubtractToQuery+1}|}"> Next Week <span class="arrow">&#8680;</span></a>
+        <a th:href="@{|/teachers/${teacher.id}/open|}">Go to current week</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="tg table  table-bordered table-striped table-hover table-sm">
+            <tbody>
+            <tr scope="row">
+                <th class="tg-0lax upright-text" rowspan="2">Місяць</th>
+                <th class="tg-0lax upright-text" rowspan="2">Дата</th>
+                <th class="tg-cly1 upright-text" rowspan="2">№ пари</th>
+                <th class="tg-0lax" rowspan="2">Час</th>
+                <th class="tg-0lax" colspan="6">Дні тижня / дисципліни</th>
+            </tr>
+
+            <tr scope="row">
+                <th:block th:if="${daysOfQueryWeekWithDates!=null}" th:each="day: ${daysOfQueryWeekWithDates}">
+                    <th class="tg-0lax">
+                        <span th:text="${day.key}"/><br/><span th:text="${day.value}"/>
+                    </th>
+                </th:block>
+            </tr>
+
+
+            <th:block th:each="i: ${#numbers.sequence(0, timeFrames.size()-1)}">
+                <tr scope="row">
+                    <th:block th:if="${i==0}">
+                        <th class="tg-0lax reverse bottom-top" rowspan="6"
+                            th:text="${monthOfTheWeekOfQuery+' ('+weekNumberOfStudyCalendar + ' тиждень)'}">Місяць (25тиждень)</th>
+                        <th class="tg-0lax reverse bottom-top" rowspan="6"
+                            th:text="${daysOfQueryWeekWithDates.get(firstDayWeekName)+' - '+daysOfQueryWeekWithDates.get(seventhDayWeekName)}">
+                            Monday date - Saturday date
+                        </th>
+                    </th:block>
+                    <th:block th:if="${lessonsMap.size()>0}">
+                        <td class="tg-0lax text-middle-justify" th:text="${i+1}"></td>
+                        <td class="tg-0lax text-middle-justify" th:text="${timeFrames.get(i)}">time</td>
+
+                        <th:block th:each="y: ${#numbers.sequence(1, 6)}">
+
+                            <th:block th:with="lesson=${lessonsMap.get(timeFrames.get(i)).get(daysOfWeekMap.get(y))}">
+                                <th:block th:if="${lesson!=null}">
+                                    <td class="tg-0lax" th:styleappend="${lesson.isOnline()}?'background-color:'+${onlineClassColor}:'background-color:'+${lesson.classTypeColor}">
+                                        <a class="icon-delete" th:href="@{|/lessons/${lesson.id}/delete?urlFrom=${'/teachers/'+teacher.id+'/read/'+weeksToAddOrSubtractToQuery}|}" onclick="return confirm('Are you sure?');">&#215;</a>
+                                        <br/>
+                                        <span th:if="${lesson.getDiscipline()!=null && !lesson.getDiscipline().isEmpty()}" th:text="${lesson.discipline}"/><br>
+                                        <span th:if="${lesson.groups()!=null && !lesson.groups.isEmpty()}" th:each="g: ${lesson.groupNames}">
+                                            <th:block th:text="${'Група: '+g+'; '}"/>
+                                        </span>
+
+                                        <span th:if="${lesson.isOnline()}">ONLINE!</span><br>
+                                        <span th:if="${lesson.auditoriumNumber!=null && !lesson.auditoriumNumber.isEmpty()}" th:text="${'Аудиторія '+lesson.auditoriumNumber}"/><br>
+                                        <span th:if="${lesson.showClassTypeOnSchedule}" th:text="${lesson.classType}"/><br>
+                                        <span th:if="${!lesson.getGroupAlternativeName().isEmpty()}" th:text="${lesson.getGroupAlternativeName()}"></span><br/>
+                                    </td>
+
+                                </th:block>
+                                <th:block th:if="${lesson==null}">
+                                    <td class="tg-0lax"></td>
+                                </th:block>
+                            </th:block>
+                        </th:block>
+                    </th:block>
+
+                    <th:block th:if="${lessonsMap.size()<=0}">
+                    </th:block>
+                </tr>
+            </th:block>
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+
+</div>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <footer th:replace="header.html :: footer"></footer>
+</div>
+
+</body>
+</html>

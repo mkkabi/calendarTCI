@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="header.html :: head('Create New Event')">
+</head>
+<body>
+<div th:replace="header.html :: navbar"></div>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div th:fragment="eventform">
+                        <div class="col-md-offset-2">
+                            <h2>Create New Event</h2>
+                        </div>
+                        <form class="form-horizontal" th:action="@{|/events/create/users/${ownerId}|}"
+                              th:object="${event}"
+                              method="post">
+                            <input type="hidden" th:field="*{owner}" th:value="${ownerId}">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="name">Name:</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" type="text" th:field="*{title}" id="name"/>
+                                    <small class="form-text text-muted" th:if="${#fields.hasErrors('title')}"
+                                           th:errors="*{title}"></small>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label id="startDate" for="event-start-date" class="col-sm-2 control-label">Event
+                                    start:</label>
+                                <div class="col-sm-8">
+                                    <input type="datetime-local" th:field="*{startTime}" id="event-start-date"/>
+                                    <small class="form-text text-muted" th:if="${#fields.hasErrors('startTime')}"
+                                           th:errors="*{startTime}"></small>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label id="endDate" for="event-end-date" class="col-sm-2 control-label">Event
+                                    End:</label>
+                                <div class="col-sm-8">
+                                    <input type="datetime-local" th:field="*{endTime}" id="event-end-date"/>
+                                    <small class="form-text text-muted" th:if="${#fields.hasErrors('endTime')}"
+                                           th:errors="*{endTime}"></small>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="attendee" class="col-sm-2 control-label">Add Event Participant:</label>
+                                <div class="col-sm-8">
+
+                                    <select class="form-control" name="attendee_id" id="attendee">
+                                        <option>Select participant...</option>
+                                        <option th:each="user : ${users}" th:value="${user.id}"
+                                                th:text="${user.firstName + ' ' + user.lastName}"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="col-sm-offset-2 col-sm-8">
+                                <input class="btn btn-info" type="submit" value="Create"/>
+                                <input class="btn btn" type="reset" value="Clear"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <th:block th:if="${duplicateEvent!=null}">
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5>Duplicate Event Found:</h5>
+                        <br>
+                        <br>
+                        <h6 th:text="${duplicateEvent.title}"></h6>
+                        <span><b>Starts on:</b></span>
+                        <span th:text="${#temporals.format(duplicateEvent.startTime, 'dd-MM-yyyy HH:mm')}"></span>
+                        <br>
+                        <span><b>Ends on:</b></span>
+                        <span th:text="${#temporals.format(duplicateEvent.endTime, 'dd-MM-yyyy HH:mm')}"></span>
+                        <br>
+                        <span>Event Owner:</span>
+                        <a th:href="@{|/users/${duplicateEvent.getOwner().getId()}/read/${duplicateEvent.getWeek()}|}">
+                            <b><span th:text="${duplicateEvent.getOwner().getFirstName()}"></span></b>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+
+    </div>
+</div>
+
+</body>
+</html>

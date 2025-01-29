@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="header.html :: head('Weekly events')">
+</head>
+<body>
+<div th:replace="header.html :: navbar"></div>
+<div class="col-md-offset-2 col-sm-8">
+
+    <div th:fragment="eventstable">
+        <h4 th:text="${'Weekly events of ' + user.firstName + ' ' + user.lastName}"/>
+        <br>
+        <table class="table">
+            <tr>
+                <th>No.</th>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Starts At</th>
+                <th>Ends At</th>
+                <th>Owner</th>
+                <th colspan="2">Duration (Min)</th>
+            </tr>
+            <tr th:each="event, iStat: ${events}">
+                <td th:text="${iStat.index + 1}"/>
+                <td th:text="${event.id}"/>
+                <td><a th:text="${event.title}"/></td>
+                <td th:text="${#temporals.format(event.startTime, 'dd.MM.yyyy HH:mm')}"/>
+                <td th:text="${#temporals.format(event.endTime, 'dd.MM.yyyy HH:mm')}"/>
+                <td th:text="${event.owner.firstName + ' ' + event.owner.lastName}"></td>
+                <td th:text="${event.durationMinutes}"/>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>

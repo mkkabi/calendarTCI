@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="header.html :: head('Settings')">
+</head>
+<body>
+<div th:replace="header.html :: navbar"></div>
+
+<div class="container">
+    <div class="row mb-5">
+        <!--        Start beginning of study calendar-->
+        <div class="col">
+            <div th:fragment="startDateOfYear">
+                <h2>Date of the beginning of study calendar</h2>
+                <div class="simple-calendar" th:if="${settings != null}">
+                    <div class="simple-calendar-header">
+                        <h2 th:text="${settings.getStudyYearStartDate().month}"/>
+                        <h6 th:text="${settings.getStudyYearStartDate().year}"/>
+                    </div>
+                    <table class="table table-striped table-dark table-hover table-bordered table-sm calendar-simple" th:if="${timeFrames != null}">
+                        <thead>
+                        <tr>
+                            <th th:each="dayOfweek: ${daysOfWeekList}">
+                                <th:block scope="col" th:text="${dayOfweek}"/>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <th:block th:if="${weekMap != null}">
+                            <th:block th:each="dayNumber: ${weekMap.keySet().stream().sorted().toList()}">
+                                <th:block
+                                        th:if="${weekMap.get(dayNumber).equals('START')} OR ${weekMap.get(dayNumber).equals('MONDAY')}">
+                                    <tr>
+                                </th:block>
+                                <th:block th:if="${dayNumber < 0}">
+                                    <td></td>
+                                </th:block>
+
+                                <th:block th:if="${dayNumber > 0}">
+
+                                    <th:block th:switch="${dayNumber}">
+                                        <th:block th:case="${settings.getStudyYearStartDate().dayOfMonth}">
+                                            <td th:classappend="red" th:class="calendar-cell" th:text="${dayNumber}"/>
+                                        </th:block>
+                                        <th:block th:case="*">
+                                            <td th:class="calendar-cell" th:text="${dayNumber}"/>
+                                        </th:block>
+                                    </th:block>
+
+
+                                </th:block>
+                                <th:block th:if="${weekMap.get(dayNumber).equals('SUNDAY')}">
+                                    </tr>
+                                </th:block>
+                            </th:block>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+                <form th:action="@{/settings/general/set}" th:object="${newSettings}" method="post">
+                    <div class="form-group row col">
+                        <input  type="date" class="col-sm-6 form-control" th:field="*{studyYearStartDate}"
+                               id="studyYearStartDate"/>
+                        <small class="form-text text-muted" th:if="${#fields.hasErrors('studyYearStartDate')}"
+                               th:errors="*{studyYearStartDate}"></small>
+
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" for="colorForOnlineClasses">Color for online classes:</label>
+                        <input type="color" class="form-control-color" id="colorForOnlineClasses" th:value="${settings==null?'#ffffff':settings.colorForOnlineClasses}" name="colorForOnlineClasses" title="Choose color">
+                        <small class="form-text text-muted" th:if="${#fields.hasErrors('colorForOnlineClasses')}" th:errors="*{colorForOnlineClasses}"></small>
+                    </div>
+
+                    <input type="submit" class="btn btn-info col-sm-4 ml-3" value="Submit"/>
+                </form>
+            </div>
+        </div>
+        <!--        End beginning of study calendar-->
+    </div>
+
+    <div class="row mb-5">
+        <!--        ClassNames Start-->
+        <div class="col-6 mb-4">
+            <div th:fragment="disciplineNames">
+                <h2>List of Discipline Names</h2>
+                <form th:action="@{/settings/discipline_name/add}" th:object="${newDisciplineName}" method="post">
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" for="name">Name:</label>
+                        <input type="text" class="form-control col-sm-6" th:field="*{name}" id="name"/>
+                        <small class="form-text text-muted" th:if="${#fields.hasErrors('name')}"
+                               th:errors="*{name}"></small>
+                    </div>
+                    <div>
+                        <input type="submit" class="btn btn-info" value="Submit"/>
+                        <input type="reset" class="btn btn" value="Clear"/>
+                    </div>
+                </form>
+                <br>
+                <table class="table table-striped table-dark table-hover table-bordered table-sm" th:if="${disciplineNames != null}">
+                    <thead>
+                    <tr>
+                        <th scope="col">No.</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="disciplineName, iStat: ${disciplineNames}">
+                        <th scope="row" th:text="${iStat.index + 1}"/>
+                        <td th:text="${disciplineName.name}"/>
+                        <td>
+<!--                            <a th:href="@{|/settings/disciplines/${disciplineName.id}/delete|}" th:text="delete"-->
+<!--                               onclick="return confirm('Are you sure?');"/>-->
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--        ClassNames End-->
+
+        <!--        EducationForm Start-->
+        <div class="col-6 mb-4">
+            <div th:fragment="educationforms" th:if="${newEducationForm != null}">
+                <h2>Education Forms</h2>
+                <form th:action="@{/settings/educationform/add}" th:object="${newEducationForm}" method="post">
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" for="title">Name:</label>
+                        <input type="text" class="form-control col-sm-6" th:field="*{title}" id="title"/>
+                        <small class="form-text text-muted" th:if="${#fields.hasErrors('title')}"
+                               th:errors="*{title}"></small>
+                    </div>
+                    <div>
+                        <input type="submit" class="btn btn-info" value="Submit"/>
+                        <input type="reset" class="btn btn" value="Clear"/>
+                    </div>
+                </form>
+                <br>
+                <table class="table table-striped table-dark table-hover table-bordered table-sm" th:if="${educationForms != null}">
+                    <thead>
+                    <tr>
+                        <th scope="col">No.</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="eduName, iStat: ${educationForms}">
+                        <th scope="row" th:text="${iStat.index + 1}"/>
+                        <td th:text="${eduName.title}"/>
+                        <td>
+<!--                            <a th:href="@{|/settings/educationform/${eduName.id}/delete|}" th:text="delete"-->
+<!--                               onclick="return confirm('Are you sure?');"/>-->
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--        EducationForm End-->
+    </div>
+
+    <div class="row mb-5">
+        <!--        Start TimeFrames-->
+        <div class="col-6 mb-4 mr-4">
+            <div th:fragment="timeFrame">
+                <h2>List of Times for Classes</h2>
+                <table class="table table-striped table-dark table-hover table-bordered table-sm" th:if="${timeFrames != null}">
+                    <thead>
+                    <tr>
+                        <th scope="col">No.</th>
+                        <th scope="col">Start</th>
+                        <th scope="col">End</th>
+                        <th scope="col">Color</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="timeFrame: ${timeFrames}">
+                        <td th:text="${timeFrame.orderNumber}"/>
+                        <td th:text="${timeFrame.startTime}"/>
+                        <td th:text="${timeFrame.endTime}"/>
+                        <td th:style="'display: block; width: 100%; text-align:center; background-color: '+${timeFrame.color}"
+                            th:text="${timeFrame.color}"/>
+                        <td th:text="${timeFrame.title}"/>
+                        <td>
+<!--                            <a th:href="@{|/settings/timeframe/${timeFrame.id}/delete|}" th:text="delete"-->
+<!--                               onclick="return confirm('Are you sure?');"/>-->
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <form th:action="@{/settings/time_frame/add}" th:object="${newTimeFrame}" method="post">
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" for="ordernumber">Order:</label>
+                        <input type="number" class="form-control col" th:field="*{orderNumber}"
+                               id="ordernumber"/>
+                        <small class="form-text text-muted" th:if="${#fields.hasErrors('orderNumber')}"
+                               th:errors="*{orderNumber}"></small>
+                    </div>
+
+                    <div class="form-group row">
+                        <label id="startTime" for="event-start-date" class="col-sm-2 col-form-label">Start:</label>
+                        <input type="time" th:field="*{startTime}" id="event-start-date"
+                               class="form-control col"/>
+                        <small class="form-text text-muted" th:if="${#fields.hasErrors('startTime')}"
+                               th:errors="*{startTime}"></small>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" id="endTime" for="event-start-date">End:</label>
+                        <input type="time" th:field="*{endTime}" id="event-end-date" class="form-control col"/>
+                        <small class="form-text text-muted" th:if="${#fields.hasErrors('endTime')}"
+                               th:errors="*{endTime}"></small>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" for="name">Color:</label>
+                        <input type="color" class="form-control-color" id="color" value="#ffffff" name="color" title="Choose your color">
+                        <small class="form-text text-muted" th:if="${#fields.hasErrors('color')}"
+                               th:errors="*{color}"></small>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" for="name">Title:</label>
+                        <input class="form-control col" type="text" th:field="*{title}"
+                               id="timeframetitle"/>
+                        <small class="form-text text-muted" th:if="${#fields.hasErrors('title')}"
+                               th:errors="*{title}"></small>
+                    </div>
+
+                    <div>
+                        <input type="submit" class="btn btn-info" value="Submit"/>
+                        <input type="reset" class="btn btn" value="Clear"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!--        End TimeFrames-->
+
+        <!--        ClassType Start-->
+        <div class="col-4 mb-4">
+            <div th:fragment="classTypes">
+                <h2>Class Types</h2>
+                <form th:action="@{/settings/classtype/add}" th:object="${newClassType}" method="post">
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" for="type">Type:</label>
+                        <input type="text" class="form-control col-sm-6" th:field="*{type}" id="type"/>
+                        <small class="form-text text-muted" th:if="${#fields.hasErrors('type')}"
+                               th:errors="*{type}"></small>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" for="classTypeColor">Color:</label>
+                        <input type="color" class="form-control-color" id="classTypeColor" value="#ffffff" name="color" title="Choose color">
+                        <small class="form-text text-muted" th:if="${#fields.hasErrors('color')}" th:errors="*{color}"></small>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="showOnSchedule" th:field="*{showOnSchedule}">
+                        <label class="form-check-label" for="showOnSchedule">
+                            Display on schedule
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="doNOTCalculateHours" th:field="*{doNOTCalculateHours}">
+                        <label class="form-check-label" for="doNOTCalculateHours">
+                            do NOT Calculate hours
+                        </label>
+                    </div>
+
+                    <div class="mt-2">
+                        <input type="submit" class="btn btn-info" value="Submit"/>
+                        <input type="reset" class="btn btn" value="Clear"/>
+                    </div>
+                </form>
+                <br>
+                <table class="table table-striped table-dark table-hover table-bordered table-sm" th:if="${classTypes != null}">
+                    <thead>
+                    <tr>
+                        <th scope="col">No.</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Color</th>
+                        <th scope="col">Visible on schedule</th>
+                        <th scope="col">Do NOT Count hours</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="classType, iStat: ${classTypes}">
+                        <th scope="row" th:text="${iStat.index + 1}"/>
+                        <td th:text="${classType.getType()}"/>
+                        <td th:style="'display: block; width: 100%; text-align:center; background-color: '+${classType.color}"
+                            th:text="${classType.color}"/>
+                        <td th:text="${classType.showOnSchedule}"/>
+                        <td th:text="${classType.doNOTCalculateHours}"/>
+
+                        <td>
+<!--                            <a th:href="@{|/settings/clastype/${classType.id}/delete|}" th:text="delete"-->
+<!--                               onclick="return confirm('Are you sure?');"/>-->
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--        ClassType End-->
+    </div>
+
+
+</div>
+
+<br/>
+<div><a href="/setup-data">Install Demo</a></div>
+<br/><br/><br/>
+<footer th:replace="header.html :: footer"></footer>
+</body>
+</html>

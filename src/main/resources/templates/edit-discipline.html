@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="header.html :: head('Create New Discipline')">
+</head>
+<body>
+<div th:replace="header.html :: navbar"></div>
+
+<!--    Classes and IDs and Types checked-->
+
+<div class="container-fluid">
+
+    <h2>Create New Discipline</h2>
+    <form action="#"  class="form-horizontal col-8" th:action="@{|/disciplines/${id}/edit|}" th:object="${discipline}"
+          method="post">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="semester">Semester #</label>
+            <input type="number" class="form-control col-sm-6" id="semester" placeholder="Only numbers allowed"
+                   th:field="*{semester}"/>
+            <small class="form-text text-muted warning-message" th:if="${#fields.hasErrors('semester')}"
+                   th:errors="*{semester}"></small>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-form-label col-sm-2" for="credits">Credits:</label>
+            <input type="number" class="form-control col-sm-6" id="credits" placeholder="Only numbers allowed"
+                   th:field="*{credits}"/>
+            <small class="form-text text-muted" th:if="${#fields.hasErrors('credits')}"
+                   th:errors="*{credits}"></small>
+        </div>
+
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="controlForm">Select Discipline Name:</label>
+            <select class="form-control col-sm-6" id="controlForm" name="controlForm" required th:field="*{controlForm}">
+                <option value="">Select Control Form</option>
+                <th:block th:each="b : ${controlForms}">
+                    <option th:value="${b.id}"
+                            th:text="${b.getType()}"
+                            th:selected="${b.id} == ${discipline.controlForm.getId()}">
+                    </option>
+                </th:block>
+            </select>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="educationform">Select Education Form:</label>
+            <select class="form-control col-sm-6" id="educationform" name="educationForm" th:field="*{educationForm}">
+                <option value="">Select Education Form:</option>
+                <th:block th:each="b : ${educationForms}">
+                    <option th:value="${b.id}"
+                            th:text="${b.getTitle()}"
+                            th:selected="${b.id} == ${discipline.educationForm.getId()}">
+                    </option>
+                </th:block>
+            </select>
+        </div>
+
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="disciplineNames">Select Discipline Name:</label>
+            <select class="form-control col-sm-6" id="disciplineNames" name="name" th:field="*{name}">
+                <option value="">Select discipline Names:</option>
+                <th:block th:each="b : ${disciplineNames}">
+                    <option th:value="${b.id}"
+                            th:text="${b.getName()}"
+                            th:selected="${b.id} == ${discipline.getName().getId()}">
+                    </option>
+                </th:block>
+            </select>
+        </div>
+
+        <input type="hidden" th:value="${discipline.getDisciplineGroup().getId()}" th:field="*{disciplineGroup}"/>
+<!--        <input type="hidden" th:field="*{id}"/>-->
+        <div>
+            <input type="submit" class="btn btn-info" value="Register"/>
+            <input type="reset" class="btn btn" value="Clear"/>
+        </div>
+    </form>
+</div>
+<br/><br/><br/>
+
+
+<footer th:replace="header.html :: footer"></footer>
+</body>
+
+</html>

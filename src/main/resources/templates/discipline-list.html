@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="header.html :: head('List of Disciplines')">
+</head>
+<body>
+<div th:replace="header.html :: navbar"></div>
+
+
+
+<div class="col-md-offset-2 col" th:fragment="disciplineslist">
+
+    <form method="get" action="/disciplines/all?page=1">
+        <div class="d-flex">
+            <h2 class="form-group">List of Disciplines</h2>
+            <div class="form-group ml-5">
+                <select class="form-control" name="size">
+                    <!--            <select class="form-control col-1" name="size">-->
+                    <option value="5" th:selected="${size == 5}">5</option>
+                    <option value="10" th:selected="${size == 10}">10</option>
+                    <option value="20" th:selected="${size == 20}">20</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                 <span class="input-group-btn">
+                    <button type="submit" class="btn">Set Page Size</button>
+                 </span>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form th:action="@{/disciplines/create}" method="get">
+        <div th:if="${groups!=null}">
+            <th:block th:each="group : ${groups}">
+                <a class="btn btn-primary" th:href="@{'/disciplines/group/' + ${group.id}}"
+                   th:text="'filter for group '+${group.groupNumber}"></a>
+            </th:block>
+        </div>
+        <div>
+
+        </div>
+    </form>
+    <br>
+    <table class="table table-striped table-dark table-hover table-bordered table-sm" th:if="${disciplines!=null}">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">
+                <a th:if="${pages}"
+                   th:href="@{'/disciplines/all?page='+${disciplines.number}+'&size='+${disciplines.size}+'&sortBy=id&sortDirection='+
+                   ${sortDirection.equals('asc') ? 'desc' : 'asc'}}"
+                   th:text="ID">
+                </a>
+                <span th:if="${!pages}" th:text="'ID'">ID</span>
+            </th>
+            <th scope="col">
+                <a th:if="${pages}"
+                   th:href="@{'/disciplines/all?page='+${disciplines.number}+'&size='+${disciplines.size}+'&sortBy=name.name&sortDirection='+
+                   ${sortDirection.equals('asc') ? 'desc' : 'asc'}}"
+                   th:text="Name">
+                </a>
+                <span th:if="${!pages}" th:text="'Name'">Name</span>
+            <th scope="col">Semester</th>
+            <th scope="col">Credits</th>
+            <th scope="col">Hours</th>
+            <th scope="col">Education Form</th>
+            <th scope="col">Additional Information</th>
+            <th scope="col">
+                <a th:if="${pages}"
+                   th:href="@{'/disciplines/all?page='+${disciplines.number}+'&size='+${disciplines.size}+'&sortBy=disciplineGroup.groupNumber&sortDirection='+
+                   ${sortDirection.equals('asc') ? 'desc' : 'asc'}}"
+                   th:text="Group">
+                </a>
+                <span th:if="${!pages}" th:text="'Group'">Group</span>
+            </th>
+            <th scope="col" colspan="2">Operations</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="discipline : ${disciplines}">
+            <td th:text="${discipline.id}"/>
+            <td th:if="${discipline.name!=null}" th:text="${discipline.name}"/>
+            <td th:text="${discipline.semester}"/>
+            <td th:text="${discipline.credits}"/>
+            <td th:text="${discipline.hours}"/>
+            <td th:if="${discipline.educationForm!=null}" th:text="${discipline.educationForm}"/>
+            <td>
+                <a th:href="@{|/disciplines/${discipline.id}/open|}">More information</a>
+            </td>
+            <td>
+                <th:block th:if="${discipline.disciplineGroup != null}">
+                    <th:block th:text="${discipline.disciplineGroup}"/>
+                </th:block>
+            </td>
+            <td>
+                <a th:href="@{|/disciplines/${discipline.id}/edit|}">Edit </a>|
+                <!--                <a class="delete" th:href="@{|/disciplines/${discipline.id}/delete|}" onclick="return confirm('Are you sure?');"> Delete</a>-->
+            </td>
+        </tr>
+    </table>
+    <br><br><br>
+
+    <div class="container" th:if="${pages}">
+        <div class="d-flex justify-content-center">
+            <ul class="pagination">
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, disciplines.totalPages - 1)}">
+                    <a class="page-link" th:classappend="${i == disciplines.number} ? ' active btn-primary' : ''"
+                       th:href="@{'/disciplines/all?page=' + ${i} + '&size=' + ${disciplines.size}+'&sortBy='+${sortBy}+'&sortDirection='+${sortDirection}}"
+                       th:text="${i + 1}"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <br><br><br>
+
+</div>
+
+<footer th:replace="header.html :: footer"></footer>
+</body>
+</html>
