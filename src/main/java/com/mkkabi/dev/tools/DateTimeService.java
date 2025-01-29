@@ -199,14 +199,14 @@ public class DateTimeService {
 //        return start1.before(end2) && start2.before(end1);
 //    }
     public static Optional<LessonDto> checkIfLessonClashesWithAnother(Lesson newLesson, List<LessonDto> lessonDtos){
-        for(LessonDto lessonDto : lessonDtos){
-            boolean clashes = newLesson.getStartDateTime().isBefore(lessonDto.getEndDateTime()) && lessonDto.getStartDateTime().isBefore((newLesson.getEndDateTime()));
-            System.out.println("newLesson.getStartDateTime() "+newLesson.getStartDateTime());
-            System.out.println("newLesson.getEndDateTime() "+newLesson.getEndDateTime());
-            System.out.println("lessonDto.getStartDateTime() "+lessonDto.getStartDateTime());
-            System.out.println("lessonDto.getEndDateTime() "+lessonDto.getEndDateTime());
-            System.out.println("lessons clash = "+clashes);
-        }
+//        for(LessonDto lessonDto : lessonDtos){
+//            boolean clashes = newLesson.getStartDateTime().isBefore(lessonDto.getEndDateTime()) && lessonDto.getStartDateTime().isBefore((newLesson.getEndDateTime()));
+//            System.out.println("newLesson.getStartDateTime() "+newLesson.getStartDateTime());
+//            System.out.println("newLesson.getEndDateTime() "+newLesson.getEndDateTime());
+//            System.out.println("lessonDto.getStartDateTime() "+lessonDto.getStartDateTime());
+//            System.out.println("lessonDto.getEndDateTime() "+lessonDto.getEndDateTime());
+//            System.out.println("lessons clash = "+clashes);
+//        }
         return lessonDtos.stream()
                 .filter(l->newLesson.getStartDateTime().isBefore(l.getEndDateTime()) &&
                         l.getStartDateTime().isBefore(newLesson.getEndDateTime())).findFirst();
