@@ -1,7 +1,5 @@
 package com.mkkabi.dev.service.impl;
 
-import com.fasterxml.jackson.databind.deser.BasicDeserializerFactory;
-import com.mkkabi.dev.dto.GroupDto;
 import com.mkkabi.dev.dto.LessonDto;
 import com.mkkabi.dev.dto.LessonDtoConverter;
 import com.mkkabi.dev.exception.DuplicateEventException;
@@ -145,11 +143,10 @@ public class LessonServiceImpl implements LessonService {
         }
     }
 
-    private Lesson changeLessonDate(Lesson lesson, LocalDateTime newStartTime, LocalDateTime newEndTime) {
+    private void changeLessonDate(Lesson lesson, LocalDateTime newStartTime, LocalDateTime newEndTime) {
         lesson.setStartDateTime(newStartTime);
         lesson.setEndDateTime(newEndTime);
         lesson.setLessonDataFromStartDateTime(newStartTime);
-        return lesson;
     }
 
     private void checkIfClashesForTeacher(Lesson lesson, long teacherId) throws DuplicateEventException {
