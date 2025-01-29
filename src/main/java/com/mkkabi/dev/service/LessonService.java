@@ -31,7 +31,7 @@ public interface LessonService {
     void swapDates(long id1, long id2) throws DuplicateEventException;
     void moveToOtherDate(long lessonId, long timeFrameId, LocalDate date) throws DuplicateEventException;
 
-    void duplicateLessonToAnotherDate(long lessonId, long timeFrameId, LocalDate date) throws DuplicateEventException;
+//    void duplicateLessonToAnotherDate(long lessonId, long timeFrameId, LocalDate date) throws DuplicateEventException;
 
     void duplicateWeek(long groupId, int weekNumber, int year) throws DuplicateEventException;
 }

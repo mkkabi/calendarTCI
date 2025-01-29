@@ -6,10 +6,8 @@ import com.mkkabi.dev.dto.LessonDto;
 import com.mkkabi.dev.dto.LessonDtoConverter;
 import com.mkkabi.dev.exception.DuplicateEventException;
 import com.mkkabi.dev.exception.NullEntityReferenceException;
-import com.mkkabi.dev.model.Discipline;
-import com.mkkabi.dev.model.Group;
-import com.mkkabi.dev.model.Lesson;
-import com.mkkabi.dev.model.TimeFrame;
+import com.mkkabi.dev.model.*;
+import com.mkkabi.dev.repository.GroupRepository;
 import com.mkkabi.dev.repository.LessonRepository;
 import com.mkkabi.dev.tools.AppLogger;
 import com.mkkabi.dev.tools.DateTimeService;
@@ -25,15 +23,18 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class LessonServiceImpl implements LessonService {
+    private final EntityManager entityManager;
     private final Logger logger = new AppLogger(this.getClass().getSimpleName());
 
     private LessonRepository repository;
+    private GroupRepository groupRepository;
     private final TimeFrameService timeFrameService;
 
     @Transactional
@@ -65,7 +66,7 @@ public class LessonServiceImpl implements LessonService {
     @Transactional
     @Override
     public Lesson readByIdWithTeacher(long id) {
-        Optional<Lesson> optional = repository.getById(id);
+        Optional<Lesson> optional = repository.getByIdWithTeacher(id);
 
         if (optional.isPresent()) {
             logger.info("reading lesson, found lesson " + optional.get().toString());
@@ -105,16 +106,11 @@ public class LessonServiceImpl implements LessonService {
 
 
         if (lesson1 != null && lesson2 != null) {
-            System.out.println(lesson1.getStartDateTime());
-            System.out.println("===");
-            System.out.println(lesson2.getStartDateTime());
             //getting list of lessons for teacher from lesson1 and date from lesson2
             List<LessonDto> lessonsOfTeacher1 = repository.getLessonByTeacherAndStartDate(lesson1.getTeacher().getId(), lesson2.getStartDateTime().toLocalDate())
                     .stream().map(LessonDtoConverter::convertToDto).collect(Collectors.toList());
             List<LessonDto> lessonsOfTeacher2 = repository.getLessonByTeacherAndStartDate(lesson2.getTeacher().getId(), lesson1.getStartDateTime().toLocalDate())
                     .stream().map(LessonDtoConverter::convertToDto).collect(Collectors.toList());
-            System.out.println("List of lessonsOfTeacher1 = " + lessonsOfTeacher1.size());
-            System.out.println("List of lessonsOfTeacher2 = " + lessonsOfTeacher2.size());
 
             Optional<LessonDto> optional1 = DateTimeService.checkIfLessonClashesWithAnother(lesson2, lessonsOfTeacher1);
             Optional<LessonDto> optional2 = DateTimeService.checkIfLessonClashesWithAnother(lesson1, lessonsOfTeacher2);
@@ -153,11 +149,8 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public void moveToOtherDate(long lessonId, long timeFrameId, LocalDate date) throws DuplicateEventException {
         TimeFrame timeFrame = timeFrameService.getTimeFrameById(timeFrameId);
-        System.out.println("lessonService.moveToOtherDate - timeframe found " + timeFrame);
         Optional<Lesson> original = repository.getById(lessonId);
         if (original.isPresent()) {
-            System.out.println("original lesson found in LessonServiceImpl = " + original.get().getStartDateTime());
-            System.out.println("moving lesson " + lessonId + " with timeStart " + LocalDateTime.of(date, timeFrame.getStartTime()) + " and timeEnd " + LocalDateTime.of(date, timeFrame.getEndTime()));
             moveToOtherDate(original.get(), LocalDateTime.of(date, timeFrame.getStartTime()), LocalDateTime.of(date, timeFrame.getEndTime()));
         } else {
             throw new EntityNotFoundException("Lesson " + lessonId + " not found in DB");
@@ -177,55 +170,84 @@ public class LessonServiceImpl implements LessonService {
 
         List<LessonDto> teacherLessonDtosForNewDate = repository.getLessonByTeacherAndStartDate(copy.getTeacher().getId(), start.toLocalDate())
                 .stream().map(LessonDtoConverter::convertToDto).collect(Collectors.toList());
-        System.out.println("found teacherlesson " + teacherLessonDtosForNewDate + " for date " + start.toLocalDate());
         // Fetch lessons that overlap with any of the groups in the lesson
         List<LessonDto> groupLessonDtosForNewDate = repository.getLessonsByGroupIdsAndStartDate(
                         copy.getGroups().stream().map(Group::getId).collect(Collectors.toList()), start.toLocalDate())
                 .stream().map(LessonDtoConverter::convertToDto).collect(Collectors.toList());
-        System.out.println("groupLessonDtosForNewDate = " + groupLessonDtosForNewDate.size());
 
         Optional<LessonDto> optionalTeacherLessonDto = DateTimeService.checkIfLessonClashesWithAnother(copy, teacherLessonDtosForNewDate);
         Optional<LessonDto> optionalLessonDtoOfGroup = DateTimeService.checkIfLessonClashesWithAnother(copy, groupLessonDtosForNewDate);
 
         if (optionalTeacherLessonDto.isPresent()) {
-            System.out.println("optionalTeacherLessonDto is present");
             logger.info("optionalTeacherLessonDto is present");
             throw new DuplicateEventException("Teacher already has class on that date in group(s): " + optionalTeacherLessonDto.get().getGroups());
         }
 
         if (optionalLessonDtoOfGroup.isPresent()) {
-            System.out.println("optionalLessonDtoOfGroup is present");
             logger.info("optionalLessonDtoOfGroup is present");
             throw new DuplicateEventException("Group(s) already have class on that date with teacher: " + optionalLessonDtoOfGroup.get().getTeacher());
         }
-
         repository.save(changeLessonDate(original, start, end));
     }
 
-    @Transactional
-    @Override
-    public void duplicateLessonToAnotherDate(long lessonId, long timeFrameId, LocalDate date) throws DuplicateEventException {
-        TimeFrame timeFrame = timeFrameService.getTimeFrameById(timeFrameId);
-        System.out.println("time frame found " + timeFrame);
-        Optional<Lesson> optionalLesson = repository.getById(lessonId);
-        System.out.println("optionalLesson found " + optionalLesson.orElse(null));
-        if (optionalLesson.isPresent()) {
-            Lesson lessonExample = optionalLesson.get();
-            System.out.println("lessonExample " + lessonExample);
-            Lesson lessonCopy = makeCopy(lessonExample);
-            System.out.println("lessonCopy " + lessonCopy);
-            LocalDateTime newDateTimeStart = LocalDateTime.of(date, timeFrame.getStartTime());
-            LocalDateTime newDateTimeEnd = LocalDateTime.of(date, timeFrame.getEndTime());
+    private void checkIfClashes(Lesson lesson) throws DuplicateEventException {
+        LocalDate start = lesson.getStartDateTime().toLocalDate();
+        List<LessonDto> teacherLessonDtosForNewDate = repository.getLessonByTeacherAndStartDate(lesson.getTeacher().getId(), start)
+                .stream().map(LessonDtoConverter::convertToDto).collect(Collectors.toList());
+        // Fetch lessons that overlap with any of the groups in the lesson
+        List<LessonDto> groupLessonDtosForNewDate = repository.getLessonsByGroupIdsAndStartDate(
+                        lesson.getGroups().stream().map(Group::getId).collect(Collectors.toList()), start)
+                .stream().map(LessonDtoConverter::convertToDto).collect(Collectors.toList());
 
-            lessonCopy.setStartDateTime(newDateTimeStart);
-            System.out.println("lessonCopy.getStartDateTime() " + lessonCopy.getStartDateTime());
-            lessonCopy.setEndDateTime(newDateTimeEnd);
-            System.out.println("lessonCopy.getEndDateTime() " + lessonCopy.getEndDateTime());
-            lessonCopy.setLessonDataFromStartDateTime(newDateTimeStart);
-            System.out.println("moving to other date " + lessonCopy);
-            moveToOtherDate(lessonCopy, newDateTimeStart, newDateTimeEnd);
+        Optional<LessonDto> optionalTeacherLessonDto = DateTimeService.checkIfLessonClashesWithAnother(lesson, teacherLessonDtosForNewDate);
+        Optional<LessonDto> optionalLessonDtoOfGroup = DateTimeService.checkIfLessonClashesWithAnother(lesson, groupLessonDtosForNewDate);
+
+        if (optionalTeacherLessonDto.isPresent()) {
+            logger.info("optionalTeacherLessonDto is present");
+            throw new DuplicateEventException("Teacher already has class on that date in group(s): " + optionalTeacherLessonDto.get().getGroups());
+        }
+
+        if (optionalLessonDtoOfGroup.isPresent()) {
+            logger.info("optionalLessonDtoOfGroup is present");
+            throw new DuplicateEventException("Group(s) already have class on that date with teacher: " + optionalLessonDtoOfGroup.get().getTeacher());
         }
     }
+
+
+    @Transactional
+    public void duplicateLessonToAnotherDate(long lessonId, long timeFrameId, LocalDate date) throws DuplicateEventException {
+        TimeFrame timeFrame = timeFrameService.getTimeFrameById(timeFrameId);
+        Optional<Lesson> original = repository.getByIdWithTeacher(lessonId);
+        if (original.isPresent()) {
+            Lesson originalLesson = original.get();
+            LessonDto lessonDto = LessonDtoConverter.convertToDto(originalLesson);
+            Discipline discipline = originalLesson.getDiscipline();
+            Teacher teacher = originalLesson.getTeacher();
+            ClassType classType = originalLesson.getClassType();
+
+            Lesson lessonCopy = new Lesson();
+            List<Long> groupsIds = groupRepository.getLessonGroupsIDs(lessonDto.getId());
+            List<Group> groups = new ArrayList<>();
+            for (Long groupId : groupsIds) {
+                groups.add(groupRepository.findById(groupId).orElse(null));
+            }
+            LocalDateTime newDateTimeStart = LocalDateTime.of(date, timeFrame.getStartTime());
+            LocalDateTime newDateTimeEnd = LocalDateTime.of(date, timeFrame.getEndTime());
+            lessonCopy.setStartDateTime(newDateTimeStart);
+            lessonCopy.setEndDateTime(newDateTimeEnd);
+            lessonCopy.setLessonDataFromStartDateTime(newDateTimeStart);
+            lessonCopy.setGroups(groups);
+            lessonCopy.setDiscipline(discipline);
+            lessonCopy.setTeacher(teacher);
+            lessonCopy.setOnline(lessonDto.isOnline());
+            lessonCopy.setClassType(classType);
+            lessonCopy.setAuditoriumNumber(lessonDto.getAuditoriumNumber());
+            lessonCopy.setLessonDataFromStartDateTime(newDateTimeStart);
+            checkIfClashes(lessonCopy);
+            repository.save(lessonCopy);
+        }
+    }
+
 
     @Transactional
     @Override
@@ -251,7 +273,6 @@ public class LessonServiceImpl implements LessonService {
 
     private Lesson makeCopy(Lesson original) {
         Lesson copy = new Lesson();
-//        copy.setGroups(original.getGroups());
         List<Group> groups = new ArrayList<>(original.getGroups());
         copy.setGroups(groups);
         copy.setDiscipline(original.getDiscipline());
