@@ -21,7 +21,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import java.util.stream.Collectors;
 
@@ -51,19 +50,6 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public Lesson readById(long id) {
         Optional<Lesson> optional = repository.findById(id);
-
-        if (optional.isPresent()) {
-            logger.info("reading lesson, found lesson " + optional.get());
-            return optional.get();
-        }
-        logger.warning("could not find lesson with the specified ID " + id);
-        throw new EntityNotFoundException("Could not find lesson with ID " + id);
-    }
-
-    @Transactional
-    @Override
-    public Lesson readByIdWithTeacher(long id) {
-        Optional<Lesson> optional = repository.getByIdWithTeacher(id);
 
         if (optional.isPresent()) {
             logger.info("reading lesson, found lesson " + optional.get());
@@ -267,14 +253,6 @@ public class LessonServiceImpl implements LessonService {
 
     @Transactional
     @Override
-    public List<Lesson> getLessonByTeacherAndWeekNumberAndYear(long id, int weekNumber, int year) {
-        List<Lesson> lessons = repository.getLessonByTeacherAndWeekNumberAndYear(id, weekNumber, year);
-        logger.info("searching for lessons of teacher ID " + id + "found " + lessons.size() + " lessons in DB");
-        return lessons.isEmpty() ? new ArrayList<>() : lessons;
-    }
-
-    @Transactional
-    @Override
     public List<LessonDto> getLessonDtoByTeacherAndWeekNumberAndYear(long id, int weekNumber, int year) {
         List<LessonDto> lessons = repository.getLessonByTeacherAndWeekNumberAndYear(id, weekNumber, year).stream().map(LessonDtoConverter::convertToDto).collect(Collectors.toList());
         logger.info("searching for DTO lessons of teacher ID " + id + "found " + lessons.size() + " lessons in DB");
@@ -302,14 +280,6 @@ public class LessonServiceImpl implements LessonService {
     public List<LessonDto> getLessonByGroupAndWeekNumberAndYear(long id, int weekNumber, int year) {
         List<LessonDto> lessons = repository.getLessonByGroupAndWeekNumberAndYear(id, weekNumber, year).stream().map(LessonDtoConverter::convertToDto).collect(Collectors.toList());
         logger.info("searching for lessons group id " + id + " weeknumber = " + weekNumber + " found " + lessons.size() + " lessons in DB");
-        return lessons.isEmpty() ? new ArrayList<>() : lessons;
-    }
-
-    @Transactional
-    @Override
-    public List<Lesson> getAllByDisciplineAndYear(Discipline discipline, int year) {
-        List<Lesson> lessons = repository.getAllByDisciplineAndYear(discipline, year);
-        logger.info("searching for lessons of " + discipline.getName() + "found " + lessons.size() + " lessons in DB");
         return lessons.isEmpty() ? new ArrayList<>() : lessons;
     }
 

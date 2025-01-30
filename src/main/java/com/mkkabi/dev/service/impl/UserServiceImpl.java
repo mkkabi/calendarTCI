@@ -19,7 +19,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final Logger logger = new AppLogger("UserServiceImpl.class");
 
-    private UserRepository repository;
+    private final UserRepository repository;
 
     public UserServiceImpl(UserRepository repository) {
         this.repository = repository;
@@ -78,17 +78,6 @@ public class UserServiceImpl implements UserService {
         List<User> users = repository.findAll();
         logger.info("found "+users.size()+" users in DB");
         return users.isEmpty() ? new ArrayList<>() : users;
-    }
-
-    @Override
-    public User getUserByEmail(String email){
-        Optional<User> optional = repository.getUserByEmail(email);
-        if (optional.isPresent()) {
-            logger.info("reading user by email, found user "+optional.get().getFirstName());
-            return optional.get();
-        }
-        logger.warning("could not find user with the specified email "+email);
-        throw new EntityNotFoundException("Could not find user with email "+email);
     }
 
 }

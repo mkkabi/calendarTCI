@@ -5,7 +5,6 @@ import com.mkkabi.dev.dto.DisciplineDtoTransformer;
 import com.mkkabi.dev.exception.NullEntityReferenceException;
 import com.mkkabi.dev.model.Discipline;
 import com.mkkabi.dev.repository.DisciplineRepository;
-import com.mkkabi.dev.repository.GroupRepository;
 import com.mkkabi.dev.tools.AppLogger;
 import com.mkkabi.dev.service.DisciplineService;
 
@@ -13,7 +12,6 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -26,14 +24,9 @@ public class DisciplineServiceImpl implements DisciplineService {
     private final Logger logger = new AppLogger("DisciplineServiceImpl.class");
 
     private final DisciplineRepository repository;
-    private final GroupRepository groupRepository;
 
-    @PersistenceContext
-    EntityManager entityManager;
-
-    public DisciplineServiceImpl(DisciplineRepository repository, GroupRepository groupRepository) {
+    public DisciplineServiceImpl(DisciplineRepository repository) {
         this.repository = repository;
-        this.groupRepository = groupRepository;
     }
 
     @Override
@@ -82,7 +75,6 @@ public class DisciplineServiceImpl implements DisciplineService {
 
     }
 
-
     @Override
     public List<Discipline> getAll() {
         List<Discipline> disciplines = repository.findAll();
@@ -101,19 +93,8 @@ public class DisciplineServiceImpl implements DisciplineService {
     }
 
     @Override
-    public Page<Discipline> getPaginatedDisciplines(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return repository.findAll(pageable);
-    }
-
-    @Override
     public Page<Discipline> getPaginatedDisciplines(Pageable pageable) {
         return repository.findAll(pageable);
-    }
-
-    @Override
-    public Page<Discipline> searchPaginatedDisciplines(String keyword, int page, int size) {
-        return repository.findByNameContaining(keyword, PageRequest.of(page, size));
     }
 
 }

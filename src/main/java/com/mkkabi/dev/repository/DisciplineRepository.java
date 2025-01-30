@@ -13,17 +13,6 @@ import java.util.Set;
 
 @Repository
 public interface DisciplineRepository extends JpaRepository<Discipline, Long> {
-//    @EntityGraph(attributePaths = {"disciplines"})
-
-//    @Query("select d from Discipline d left join fetch d.teachers where d.id = :id")
-//    Optional<Discipline> getByIdWithTeacher(long id);
-
-//    @Query("SELECT distinct d FROM Discipline d left join fetch d.teachers where d.id = :id")
-//    Set<Discipline> getAllWithTeachersByGroup(long id);
-
-//    @Query("SELECT d FROM Discipline d left join fetch d.teachers where d.id = :id")
-//    Optional<Discipline> readByIdWithTeachers(long id);
-
     @Query(value = "select distinct * from disciplines d left outer join groups g on d.group_id=g.id where g.id = ?1", nativeQuery = true)
     List<Discipline> getAllForGroup(long groupId);
 

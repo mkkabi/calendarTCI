@@ -98,14 +98,6 @@ public class EventController {
             return e.getStartTime().format(formatter);
         }));
 
-        System.out.println("================================");
-        for (String key : eventMap.keySet()) {
-            System.out.println("events for key " + key);
-            for (Event e : eventMap.get(key)) {
-                System.out.println(e.getTitle() + " " + e.getStartTime());
-            }
-        }
-
         model.addAttribute("events", weekly);
         model.addAttribute("user", userService.readById(ownerId));
         return "events-weekly";

@@ -122,30 +122,26 @@ public class GroupController {
         GroupDto groupDto = groupService.readByIdAsDto(id);
 
         List<LessonDto> weeklyLessons = lessonService.getLessonByGroupAndWeekNumberAndYear(id, weekNumberOfLocalDateNowPlusWeeks, yearNumberOfLocalDateNowPlusWeeks);
-        System.out.println("weekNumberOfLocalDateNowPlusWeeks = "+weekNumberOfLocalDateNowPlusWeeks);
         logger.info("found number of lessons for this week = " + weeklyLessons.size());
 
         Map<String, Map<LocalDate, LessonDto>> lessonsByTimeFrameAndLocalDate = new LinkedHashMap<>();
         List<TimeFrame> timeFramesList = timeFrameService.getAll().stream().sorted(Comparator.comparing(TimeFrame::getStartTime)).collect(Collectors.toList());
 
 
-        for(int i=0; i<timeFramesList.size(); i++){
-            String timeFrameStr = timeFramesList.get(i).getStartTime()+" - "+timeFramesList.get(i).getEndTime();
+        for (TimeFrame timeFrame : timeFramesList) {
+            String timeFrameStr = timeFrame.getStartTime() + " - " + timeFrame.getEndTime();
             lessonsByTimeFrameAndLocalDate.put(timeFrameStr, new LinkedHashMap<>());
-            for(int y =0; y<weekDatesList.size(); y++){
+            for (LocalDate localDate : weekDatesList) {
                 lessonsByTimeFrameAndLocalDate.get(timeFrameStr)
-                        .put(weekDatesList.get(y), null);
+                        .put(localDate, null);
             }
         }
 
-        for(int i=0; i<weeklyLessons.size(); i++){
-            System.out.println(weeklyLessons.get(i).getStartDateTime().toLocalTime());
-            System.out.println(weeklyLessons.get(i).getEndDateTime().toLocalTime());
-            System.out.println("===============");
-            String timeFrameString = weeklyLessons.get(i).getStartDateTime().toLocalTime()+" - "+weeklyLessons.get(i).getEndDateTime().toLocalTime();
-            LocalDate lessonDate = weeklyLessons.get(i).getDateStart();
-            if(lessonsByTimeFrameAndLocalDate.get(timeFrameString)!=null)
-                lessonsByTimeFrameAndLocalDate.get(timeFrameString).put(lessonDate, weeklyLessons.get(i));
+        for (LessonDto weeklyLesson : weeklyLessons) {
+            String timeFrameString = weeklyLesson.getStartDateTime().toLocalTime() + " - " + weeklyLesson.getEndDateTime().toLocalTime();
+            LocalDate lessonDate = weeklyLesson.getDateStart();
+            if (lessonsByTimeFrameAndLocalDate.get(timeFrameString) != null)
+                lessonsByTimeFrameAndLocalDate.get(timeFrameString).put(lessonDate, weeklyLesson);
         }
         model.addAttribute("weeksToAddOrSubtractToQuery", weeksToAddOrSubtractToQuery);
         model.addAttribute("group", groupDto);
@@ -164,7 +160,6 @@ public class GroupController {
         if(path.contains("simple")){
             return "simple_schedule";
         }
-
         return "group-page";
     }
 
@@ -199,8 +194,6 @@ public class GroupController {
 
     private void setModelDataForCreateEdit(Model model) {
         model.addAttribute("educationForms", educationFormService.getAll());
-//        model.addAttribute("disciplines", disciplineService.getAllAsDto());
-//        model.addAttribute("teachers", teacherService.getAllAsDto());
     }
 
 }

@@ -2,9 +2,6 @@ package com.mkkabi.dev.controller;
 
 import com.mkkabi.dev.dto.*;
 import com.mkkabi.dev.model.Teacher;
-import com.mkkabi.dev.service.DisciplineService;
-import com.mkkabi.dev.service.LessonService;
-import com.mkkabi.dev.service.TeacherService;
 import com.mkkabi.dev.service.impl.*;
 import com.mkkabi.dev.tools.AppLogger;
 import com.mkkabi.dev.tools.DateTimeService;
@@ -80,7 +77,6 @@ public class TeacherController {
         Teacher teacher = teacherService.readById(id);
         teacher.setHidden(true);
         teacherService.create(teacher);
-        System.out.println("== updated reacher "+teacher.getFio());
         return "redirect:/teachers/all";
     }
 

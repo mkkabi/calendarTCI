@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Service
 public class EventServiceImpl implements EventService {
-    private EventRepository repository;
+    private final EventRepository repository;
 
     public EventServiceImpl(EventRepository repository) {
         this.repository = repository;

@@ -3,7 +3,6 @@ package com.mkkabi.dev.service.impl;
 import com.mkkabi.dev.dto.TeacherDto;
 import com.mkkabi.dev.dto.TeacherDtoTransformer;
 import com.mkkabi.dev.exception.NullEntityReferenceException;
-import com.mkkabi.dev.model.Discipline;
 import com.mkkabi.dev.model.Teacher;
 import com.mkkabi.dev.repository.TeacherRepository;
 import com.mkkabi.dev.tools.AppLogger;
@@ -61,8 +60,10 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
+    @Transactional
     public TeacherDto readByIdAsDto(long id) {
-        return TeacherDtoTransformer.convertToDto(readById(id));
+        Teacher teacher = readById(id);
+        return TeacherDtoTransformer.convertToDto(teacher);
     }
 
     @Transactional
@@ -81,6 +82,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
+    @Transactional
     public void delete(long id) {
         Teacher teacher = readById(id);
         if (teacher != null) {

@@ -17,7 +17,7 @@ import java.util.Optional;
 @Service
 public class TimeFrameServiceImpl implements TimeFrameService {
     private final Logger logger = new AppLogger("TimeFrameService.class");
-    private TimeFrameRepository repository;
+    private final TimeFrameRepository repository;
 
     public TimeFrameServiceImpl(TimeFrameRepository repository) {
         this.repository = repository;
