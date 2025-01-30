@@ -185,35 +185,35 @@
                                 #temporals.format(timeFramesList.get(i).getStartTime(),'HH:mm')+' - '+#temporals.format(timeFramesList.get(i)
                                 .getEndTime(),'HH:mm')).get(weekDatesList.get(y))}">
                                 <th:block th:if="${lesson!=null}">
-                                    <td class="tg-0lax draggable-item schedule-cell"
+                                    <td class="tg-0lax draggable-item"
                                         th:styleappend="${lesson.isOnline()}?'background-color:'+${onlineClassColor}:'background-color:'+${lesson.classTypeColor}">
                                         <a class="icon-delete"
                                            th:href="@{|/lessons/${lesson.id}/delete?urlFrom=${'/groups/'+group.id+'/read/'+weeksToAddOrSubtractToQuery}|}"
                                            onclick="return confirm('Are you sure?');">&#215;</a>
+                                        <br/>
+                                        <span th:if="${lesson.getDiscipline()!=null && !lesson.getDiscipline().isEmpty()}"
+                                              th:text="${lesson.discipline}"/><br>
+                                        <!--                                            <span th:if="${lesson.getGroupNumber()!=null && lesson.getGroupNumber()!=0}" th:text="${'Група: '+lesson.groupNumber}"/><br>-->
 
-                                        <p th:if="${lesson.getDiscipline()!=null && !lesson.getDiscipline().isEmpty()}"
-                                              th:text="${lesson.discipline}"/>
-                                        <!--<span th:if="${lesson.getGroupNumber()!=null && lesson.getGroupNumber()!=0}" th:text="${'Група: '+lesson.groupNumber}"/><br>-->
-
-                                        <p th:if="${lesson.getTeacher()!=null && lesson.teacher!=' '}"
-                                              th:text="${'Викладач : '+lesson.teacher}"/>
-                                        <p th:if="${lesson.isOnline()}">ONLINE!</p>
-                                        <p th:if="${lesson.auditoriumNumber!=null && !lesson.auditoriumNumber.isEmpty()}"
-                                              th:text="${'Аудиторія '+lesson.auditoriumNumber}"/>
-                                        <p th:if="${lesson.showClassTypeOnSchedule}"
-                                              th:text="${lesson.classType}"/>
-                                        <p style="display: none;"
-                                              class="postdatacell"><th:block th:text="${'id:'+lesson.id}"/>
+                                        <span th:if="${lesson.getTeacher()!=null && lesson.teacher!=' '}"
+                                              th:text="${'Викладач : '+lesson.teacher}"/><br>
+                                        <span th:if="${lesson.isOnline()}">ONLINE!</span><br>
+                                        <span th:if="${lesson.auditoriumNumber!=null && !lesson.auditoriumNumber.isEmpty()}"
+                                              th:text="${'Аудиторія '+lesson.auditoriumNumber}"/><br>
+                                        <span th:if="${lesson.showClassTypeOnSchedule}"
+                                              th:text="${lesson.classType}"/><br>
+                                        <span style="display: none;"
+                                              class="postdatacell"><th:block th:text="${'id:'+lesson.id}"/></span>
                                         <p th:if="${lesson.comment!=null}"
-                                              th:text="${lesson.comment}"/>
+                                           th:text="${lesson.comment}"/>
 
                                     </td>
 
                                 </th:block>
                                 <th:block th:if="${lesson==null}">
                                     <td class="tg-0lax draggable-item">
-                                        <span style="display: none" class="postdatacell">
-                                            <th:block th:text="${'timeFrameId:'+timeFramesList.get(i).id+';startDate:'}+${#temporals.format(weekDatesList.get(y), 'yyyy-MM-dd')}"/></span>
+                                        <span style="display: none" class="postdatacell"><th:block
+                                                th:text="${'timeFrameId:'+timeFramesList.get(i).id+';startDate:'}+${#temporals.format(weekDatesList.get(y), 'yyyy-MM-dd')}"/></span>
                                         <a th:title="'lesson for date '+ ${#temporals.format(weekDatesList.get(y), 'yyyy-MM-dd')+' and time '+timeFramesList.get(i).getStartTime()}"
                                            th:href="@{|/lessons/create/group/${group.id}/${timeFramesList.get(i).id}/${#temporals.format(weekDatesList.get(y), 'yyyy-MM-dd')}|}">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"

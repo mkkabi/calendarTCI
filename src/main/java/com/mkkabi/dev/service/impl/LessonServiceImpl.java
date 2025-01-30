@@ -180,6 +180,7 @@ public class LessonServiceImpl implements LessonService {
             LocalDateTime newDateTimeEnd = LocalDateTime.of(date, timeFrame.getEndTime());
             lessonCopy.setStartDateTime(newDateTimeStart);
             lessonCopy.setEndDateTime(newDateTimeEnd);
+            lessonCopy.setComment(originalLesson.getComment());
             lessonCopy.setLessonDataFromStartDateTime(newDateTimeStart);
             lessonCopy.setGroups(groups);
             lessonCopy.setDiscipline(discipline);
