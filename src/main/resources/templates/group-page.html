@@ -153,7 +153,7 @@
             <tr scope="row">
                 <th:block th:if="${daysOfQueryWeekWithDates!=null}" th:each="day: ${daysOfQueryWeekWithDates}">
                     <th class="tg-0lax">
-                        <span th:text="${day.key}"/><br/><span th:text="${day.value}"/>
+                        <span th:text="${day.key}"/><br/><p th:text="${day.value}"/>
                     </th>
                 </th:block>
             </tr>
