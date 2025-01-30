@@ -129,14 +129,15 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public void moveToOtherDate(long lessonId, long timeFrameId, LocalDate date) throws DuplicateEventException {
         TimeFrame timeFrame = timeFrameService.getTimeFrameById(timeFrameId);
-        Optional<Lesson> original = repository.getById(lessonId);
-        if (original.isPresent()) {
+        Lesson original = repository.getById(lessonId).orElse(null);
+        if (original!=null) {
 //            moveToOtherDate(original.get(), LocalDateTime.of(date, timeFrame.getStartTime()), LocalDateTime.of(date, timeFrame.getEndTime()));
-            Lesson copy = makeCopy(original.get());
+            Lesson copy = makeCopy(original);
             changeLessonDate(copy, LocalDateTime.of(date, timeFrame.getStartTime()), LocalDateTime.of(date, timeFrame.getEndTime()));
             checkIfClashesForTeacher(copy, copy.getTeacher().getId());
             checkIfClashesForGroup(copy, copy.getGroups().stream().map(Group::getId).collect(Collectors.toList()));
-            repository.save(copy);
+            changeLessonDate(original, LocalDateTime.of(date, timeFrame.getStartTime()), LocalDateTime.of(date, timeFrame.getEndTime()));
+            repository.save(original);
         } else {
             throw new EntityNotFoundException("Lesson " + lessonId + " not found in DB");
         }
