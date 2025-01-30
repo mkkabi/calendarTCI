@@ -28,6 +28,7 @@ public class LessonDto {
         return groups;
     }
     List<String> groupNames;
+    String comment;
 
 
 }

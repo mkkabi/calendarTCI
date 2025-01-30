@@ -62,7 +62,7 @@ public class Lesson {
     @Column(name = "week_number", nullable = false)
     private int weekNumber;
 
-    @Column(name = "dayOfWeek", nullable = false)
+    @Column(name = "day_of_week", nullable = false)
     private String dayOfWeek;
 
     @Column(name = "auditorium_number", nullable = true)
@@ -73,6 +73,9 @@ public class Lesson {
 
     @Column(name = "year", nullable = false)
     private int year;
+
+    @Column(name="comment")
+    private String comment;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     @Column(name = "start_date_time")
