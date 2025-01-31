@@ -273,3 +273,16 @@ body{
 .white{background-color: white}
 
 .schedule-cell{padding: 10px 0 10px!important}
+
+.table-wrapper{
+    height: 300px;
+    overflow: auto;
+
+}
+
+.settings-block{
+    background-color: #908953;
+    margin-right: 15px;
+    box-sizing: border-box;
+    padding:15px 0 15px;
+}

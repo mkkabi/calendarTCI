@@ -41,7 +41,14 @@
 <h4>Щотижневий розклад навчальних занять</h4>
 <h4>студентів
     <th:block th:text="${group.courseNumber}"/>
-    курсу денної форми навчання за ОП «БОГОСЛОВ'Я»
+    курсу
+    <th:block th:if="${group.getEducationForm()=='Заочна'}">
+        заочної
+    </th:block>
+    <th:block th:unless="${group.getEducationForm()=='Заочна'}">
+        денної
+    </th:block>
+    форми навчання за ОП «БОГОСЛОВ'Я»
 </h4>
 
 </div>
