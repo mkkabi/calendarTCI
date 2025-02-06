@@ -12,6 +12,8 @@
                 <div class="card-body">
                     <div th:fragment="lessonform">
                         <div class="col-md-offset-2">
+
+                            <a th:href="@{|/lessons/create-one-time/group/${groupId}/${week}/${startDate}|}"  ><h3>Одноразовий Урок </h3> </a>
                             <h2>Create New Lesson</h2>
                         </div>
                         <form class="form-horizontal" th:action="@{|/lessons/create/group/${groupId}|}"

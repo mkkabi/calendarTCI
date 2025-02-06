@@ -13,7 +13,7 @@ import java.util.Optional;
 @Service
 public class RoleServiceImpl implements RoleService {
 
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
     public RoleServiceImpl(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
@@ -31,7 +31,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role readById(long id) {
         Optional<Role> optional = roleRepository.findById(id);
-            return optional.get();
+            return optional.orElse(null);
     }
 
     @Override

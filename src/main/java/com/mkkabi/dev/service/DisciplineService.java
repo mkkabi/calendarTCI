@@ -16,8 +16,5 @@ public interface DisciplineService {
     List<DisciplineDTO>getAllAsDto();
     List<DisciplineDTO> getAllForGroupAsDto(long id);
 
-    Page<Discipline> getPaginatedDisciplines(int page, int size);
     Page<Discipline> getPaginatedDisciplines(Pageable pageable);
-    Page<Discipline> searchPaginatedDisciplines(String keyword, int page, int size);
-
 }

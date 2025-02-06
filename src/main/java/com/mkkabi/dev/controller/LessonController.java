@@ -38,6 +38,7 @@ public class LessonController {
     private final GroupServiceImpl groupService;
     private final Logger logger = new AppLogger(this.getClass().getSimpleName());
     private final SettingsServiceImpl settingsService;
+    private final DisciplineService disciplineService;
 
 
     @GetMapping("/all")
@@ -49,7 +50,7 @@ public class LessonController {
         return "lesson-list";
     }
 
-    @GetMapping(value = {"/create/group/{groupId}", "/create/group/{groupId}/{timeframeId}/{dateStart}"})
+    @GetMapping(value = {"/create/group/{groupId}",  "/create/group/{groupId}/{timeframeId}/{dateStart}"})
     public String create(@PathVariable("groupId") long groupId,
                          @PathVariable("timeframeId") Optional<Long> timeframeId,
                          @PathVariable("dateStart") Optional<String> dateStart,
@@ -60,6 +61,9 @@ public class LessonController {
 
         model.addAttribute("newLesson", new Lesson());
         setAllModelDataForNewLesson(model, groupId);
+        model.addAttribute("groupId", groupId);
+        long week = timeframeId.orElse(0L);
+        model.addAttribute("week", week);
         return "create-lesson-from-group";
     }
 
@@ -88,6 +92,78 @@ public class LessonController {
         model.addAttribute("allGroups", allGroups);
     }
 
+    @GetMapping(value = { "/create-one-time/group/{groupId}", "/create-one-time/group/{groupId}/{timeframeId}/{dateStart}"})
+    public String createSingleTimeLesson(@PathVariable("groupId") long groupId,
+                         @PathVariable("timeframeId") Optional<Long> timeframeId,
+                         @PathVariable("dateStart") Optional<String> dateStart,
+                         Model model) {
+
+        timeframeId.ifPresent(id -> model.addAttribute("timeFrameId", id));
+        dateStart.ifPresent(date -> model.addAttribute("startDate", LocalDate.parse(date)));
+
+        model.addAttribute("newLesson", new Lesson());
+        model.addAttribute("onlineColor", settingsService.findLatest().getColorForOnlineClasses());
+        model.addAttribute("classTypes", classTypeService.getAll());
+        model.addAttribute("timeFrames", timeFrameService.getAll());
+        Set<GroupDto> allGroups = groupService.getAllAsDto();
+        model.addAttribute("allGroups", allGroups);
+        return "create-one_time_lesson-from-group";
+    }
+
+    // todo poor approach to hardcode teacher and discipline
+    @PostMapping(value = { "/create-one-time/group/{groupId}", "/create-one-time/group/{groupId}/{timeframeId}/{dateStart}"})
+    public String createSingleTimeLesson(@Validated @ModelAttribute("newLesson") Lesson newLesson,
+                         @PathVariable("groupId") long groupId,
+                         @Min(1) @RequestParam("timeFrameId") long timeFrameId,
+                         @NotEmpty @Pattern(regexp = "\\n{4}-\\n{2}-\\n{2}") @RequestParam("startDate") String startDate,
+                         BindingResult result,
+                         Model model,
+                         @RequestParam(value = "groupsList", required = false) List<Long> groupDtoSet) {
+//        if (result.hasErrors()) {
+//            logger.warning("Lesson data has validation errors: " + result.getAllErrors());
+//            return handleModelError(null, model, newLesson, startDate, groupId);
+//        }
+        if (startDate.isEmpty()) {
+            return handleModelError("Date and timeFrame need to be filled out", model, newLesson, startDate, groupId);
+        }
+
+        TimeFrame timeFrame = timeFrameService.getTimeFrameById(timeFrameId);
+        LocalDate parsedDate = LocalDate.parse(startDate);
+        LocalDateTime startDateTime = LocalDateTime.of(parsedDate, timeFrame.getStartTime());
+        LocalDateTime endDateTime = LocalDateTime.of(parsedDate, timeFrame.getEndTime());
+
+        Teacher teacher = teacherService.readById(14);
+        Discipline discipline = disciplineService.readById(1);
+
+        newLesson.setDiscipline(discipline);
+        newLesson.setTeacher(teacher);
+        newLesson.setStartDateTime(startDateTime);
+        newLesson.setEndDateTime(endDateTime);
+        newLesson.setLessonDataFromStartDateTime(startDateTime);
+
+//        if (!checkForClashingLessonsForTeacher(model, newLesson).isEmpty()) {
+//            return "create-one_time_lesson-from-group";
+//        }
+        if(groupDtoSet != null && !groupDtoSet.isEmpty()){
+            if (!checkForClashingLessonsForMultipleGroup(model, newLesson, groupDtoSet).isEmpty()) {
+                return "create-one_time_lesson-from-group";
+            }
+            List<Group> groups = groupDtoSet.stream().map(groupService::readById)
+                    .collect(Collectors.toList());
+            newLesson.setGroups(groups);
+            lessonService.create(newLesson);
+            return redirectToGroupWithWeekOffset(newLesson.getStartDateTime().toLocalDate());
+        }else{
+            if (checkForClashingLessonsForGroup(model, groupId, newLesson)) {
+                return "create-one_time_lesson-from-group";
+            }
+
+            Group group = groupService.readById(groupId);
+            newLesson.setGroups(Collections.singletonList(group));
+            lessonService.create(newLesson);
+            return redirectToGroupWithWeekOffset(newLesson.getStartDateTime().toLocalDate());
+        }
+    }
 
     @PostMapping("/create/group/{groupId}")
     public String create(@Validated @ModelAttribute("newLesson") Lesson newLesson,

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="header.html :: head('Create New Lesson')">
+</head>
+<body>
+<div th:replace="header.html :: navbar"></div>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div th:fragment="lessonform">
+                        <div class="col-md-offset-2">
+                            <h2>Create New Lesson</h2>
+                        </div>
+                        <form class="form-horizontal" th:action="@{|/lessons/create-one-time/group/${groupId}|}"
+                              th:object="${newLesson}" method="post">
+
+                            <div class="form-group">
+                                <label for="lesson-auditoriumNumber" class="col-sm-4 col-form-label">Auditorium Number:</label>
+                                <div class="col-sm-8">
+                                    <input type="number" class="form-control" th:field="*{auditoriumNumber}" id="lesson-auditoriumNumber"/>
+                                    <small class="form-text text-muted" th:if="${#fields.hasErrors('auditoriumNumber')}"
+                                           th:errors="*{auditoriumNumber}"></small>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label id="startDate"  for="lesson-start-date" class="col-sm-4 col-form-label">Lesson start Date:</label>
+                                <div class="col-sm-8">
+                                    <input class="form-control" th:if="${startDate != null}" id="lesson-start-date" type="date" th:value="${startDate}" name="startDate"/>
+                                    <input th:unless="${startDate != null}" type="date" id="lesson-start-date" name="startDate"/>
+<!--                                    <small class="form-text text-muted" th:if="${}" th:errorclass="error" th:text="this field is necessary" />-->
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="lesson-name" class="col-sm-4 col-form-label">Название:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" th:field="*{comment}" id="lesson-name"/>
+<!--                                    <small class="form-text text-muted" th:if="${#fields.hasErrors('comment')}"-->
+<!--                                           th:errors="*{auditoriumNumber}"></small>-->
+                                </div>
+                            </div>
+<!--                            <div class="form-group">-->
+<!--                                <label for="discipline" class="col-sm-4 col-form-label">Choose Discipline:</label>-->
+<!--                                <div class="col-sm-8">-->
+<!--                                    <select class="form-control" name="discipline" id="discipline">-->
+<!--                                        <option value="">Select Discipline...</option>-->
+<!--                                        <option th:each="discipline : ${disciplines}" th:value="${discipline.id}"-->
+<!--                                                th:text="${discipline.name.name}"></option>-->
+<!--                                    </select>-->
+<!--                                </div>-->
+<!--                            </div>-->
+
+<!--                            <div class="form-group">-->
+<!--                                <label for="teacher" class="col-sm-4 col-form-label">Choose teacher:</label>-->
+<!--                                <div class="col-sm-8">-->
+<!--                                    <select class="form-control" name="teacher" id="teacher">-->
+<!--                                        <option value="">Select teacher...</option>-->
+<!--                                        <option th:each="teacher : ${teachers}" th:value="${teacher.id}"-->
+<!--                                                th:text="${teacher.name}"></option>-->
+<!--                                    </select>-->
+<!--                                </div>-->
+<!--                            </div>-->
+
+                            <div class="form-group">
+                                <label for="timeFrameId" class="col-sm-4 col-form-label">Choose timeframe:</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" id="timeFrameId" name="timeFrameId">
+                                    <span  th:each="timeFrame : ${timeFrames}">
+                                        <option th:if="${timeFrameId!=null && timeFrame.id == timeFrameId}" th:selected="${true}"
+                                                th:value="${timeFrame.id}" th:text="${timeFrame.title}"/>
+                                        <option th:if="${timeFrameId==null || timeFrameId!=null && timeFrame.id != timeFrameId}"
+                                                th:value="${timeFrame.id}" th:text="${timeFrame.title}"/>
+                                    </span>
+                                    </select>
+<!--                                    <select class="form-control" id="timeFrameId" name="timeFrameId">-->
+<!--                                        <option value="0">Select timeframe...</option>-->
+<!--                                        <option th:each="timeframe : ${timeFrames}"-->
+<!--                                                th:text="${timeframe.title}" th:value="${timeframe.id}"></option>-->
+<!--                                    </select>-->
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="classType" class="col-sm-4 col-form-label">Choose Class Type:</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" name="classType" id="classType">
+
+                                        <span th:each="classType : ${classTypes}">
+                                            <option th:if="${classType.id == 1}" th:selected="${true}" th:value="${classType.id}" th:text="${classType.type}"/>
+                                            <option th:unless="${classType.id == 1}" th:value="${classType.id}" th:text="${classType.type}"/>
+                                        </span>
+<!--                                        <option>Select classType...</option>-->
+<!--                                        <option th:each="classType : ${classTypes}" th:value="${classType.id}"-->
+<!--                                                th:text="${classType.type}"></option>-->
+                                    </select>
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="form-check" th:style="'color: #000; size: 20px; display: block; width: fit-content; padding: 5px; background-color: '+${onlineColor}">
+                                <input class="checkbox" type="checkbox" value="" id="online" th:field="*{online}">
+                                <label class="form-check-label" for="online">Online lesson?</label>
+                            </div>
+                            <br/><br/>
+
+                                <input type="checkbox" id="multipleGroupToggleBlock" />
+                                <label for="multipleGroupToggleBlock">Добавить в несколько груп?</label>
+                                <div id="conditionalBlock" th:style="${isChecked} ? 'display:block;' : 'display:none;'">
+                                    <th:block th:each="group : ${allGroups}">
+                                        <input type="checkbox" name="groupsList" th:value="${group.id}" class="m-2" id="group"/>
+                                        <label for="group" th:text="${group.groupNumber}"></label>
+                                        <br>
+                                    </th:block>
+                                </div>
+
+                            <br/><br/>
+                            <div class="col-sm-offset-2 col-sm-8">
+                                <input class="btn btn-info" type="submit" value="Create"/>
+                                <input class="btn btn" type="reset" value="Clear"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <th:block th:if="${duplicateLessonOfTeacher!=null}">
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5>Duplicate Lesson Found for Teacher <th:block th:text="${duplicateLessonOfTeacher.teacher}"/>:</h5>
+                        <br>
+                        <h6 th:text="${'Teacher: '+duplicateLessonOfTeacher.teacher}"></h6>
+                        <span><b>Starts on:</b></span>
+                        <span th:text="${#temporals.format(duplicateLessonOfTeacher.startDateTime, 'dd-MM-yyyy')}+' Time: '+
+                                        ${#temporals.format(duplicateLessonOfTeacher.startDateTime, 'HH:mm')}"></span>
+                        <br>
+                        <span><b>Ends on:</b></span>
+                        <span th:text="${#temporals.format(duplicateLessonOfTeacher.endDateTime, 'dd-MM-yyyy HH:mm')}"></span>
+                        <br>
+                        <span>Group where <th:block th:text="${duplicateLessonOfTeacher.teacher}"/> teaches: <th:block th:text="${duplicateLessonOfTeacher.groups}"/> </span>
+                        <br/>
+                        <a th:href="@{|/teachers/${duplicateLessonOfTeacher.getTeacherId()}/open|}">
+                            <b>Open <th:block th:text="${duplicateLessonOfTeacher.teacher}"/> page</b>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+
+        <th:block th:if="${duplicateLessonOfGroup!=null}">
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5>Duplicate Lesson Found for Group #<th:block th:text="${duplicateLessonOfGroup.groups()}"/>:</h5>
+                        <br>
+                        <h6 th:text="${'Teacher: '+duplicateLessonOfGroup.teacher}"></h6>
+                        <span><b>Starts on:</b></span>
+                        <span th:text="${#temporals.format(duplicateLessonOfGroup.startDateTime, 'dd-MM-yyyy')}+' Time: '+
+                                        ${#temporals.format(duplicateLessonOfGroup.startDateTime, 'HH:mm')}"></span>
+                        <br>
+                        <span><b>Ends on:</b></span>
+                        <span th:text="${#temporals.format(duplicateLessonOfGroup.endDateTime, 'dd-MM-yyyy')}+' Time: '+
+                                        ${#temporals.format(duplicateLessonOfGroup.endDateTime, 'HH:mm')}"></span>
+                        <br>
+
+                        <span>Teacher of the Lesson: <th:block th:text="${duplicateLessonOfGroup.teacher}"/></span>
+                        <br/>
+                        <a th:href="@{|/teachers/${duplicateLessonOfGroup.getTeacherId()}/open|}">
+                            <b>Open <th:block th:text="${duplicateLessonOfGroup.teacher}"/> page</b>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+
+    </div>
+</div>
+
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkbox = document.getElementById('multipleGroupToggleBlock');
+        const block = document.getElementById('conditionalBlock');
+
+        checkbox.addEventListener('change', function() {
+            block.style.display = this.checked ? 'block' : 'none';
+        });
+    });
+</script>
+
+</html>

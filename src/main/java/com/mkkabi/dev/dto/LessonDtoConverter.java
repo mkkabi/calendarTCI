@@ -42,6 +42,7 @@ public class LessonDtoConverter {
         LocalTime timeEnd = l.getEndDateTime().toLocalTime();
         LocalDate dateStart = l.getStartDateTime().toLocalDate();
         LocalDate dateEnd = l.getEndDateTime().toLocalDate();
+        String comment = l.getComment();
 
          return new LessonDto(
                 l.getId(),
@@ -67,7 +68,8 @@ public class LessonDtoConverter {
                 l.getClassType().getType(),
                 disciplineHours,
                 groupIds,
-                 groupNames
+                 groupNames,
+                 comment
 
         );
     }

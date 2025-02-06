@@ -19,7 +19,7 @@ public class DisciplineNameServiceImpl implements DisciplineNameService {
 
     private final Logger logger = new AppLogger("DisciplineNameImpl.class");
 
-    private DisciplineNameRepository repository;
+    private final DisciplineNameRepository repository;
 
 
     public DisciplineNameServiceImpl(DisciplineNameRepository disciplineNameRepository) {

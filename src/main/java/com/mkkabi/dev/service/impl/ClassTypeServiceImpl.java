@@ -19,7 +19,7 @@ import java.util.Optional;
 public class ClassTypeServiceImpl implements ClassTypeService {
     private final Logger logger = new AppLogger("ClassTypeServiceImpl.class");
 
-    private ClassTypeRepository repository;
+    private final ClassTypeRepository repository;
 
     public ClassTypeServiceImpl(ClassTypeRepository repository) {
         this.repository = repository;

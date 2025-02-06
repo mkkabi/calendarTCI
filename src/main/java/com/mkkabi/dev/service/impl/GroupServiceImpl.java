@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class GroupServiceImpl implements GroupService {
     private final Logger logger = new AppLogger("GroupServiceImpl.class");
 
-    private GroupRepository repository;
+    private final GroupRepository repository;
 
     public GroupServiceImpl(GroupRepository repository) {
         this.repository = repository;

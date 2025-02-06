@@ -3,7 +3,6 @@ package com.mkkabi.dev.controller.rest;
 import com.mkkabi.dev.service.impl.LessonServiceImpl;
 import com.mkkabi.dev.tools.AppLogger;
 import com.mkkabi.dev.exception.DuplicateEventException;
-import com.mkkabi.dev.service.LessonService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.ui.Model;
@@ -26,7 +25,6 @@ private LessonServiceImpl lessonService;
                            String lesson1Html, @Param(value = "lesson2Html") String lesson2Html,
                            @Param(value = "ctrlPressed") boolean ctrlPressed, Model model){
 
-        System.out.println("lesson1Html = "+lesson1Html+" lesson2Html = "+lesson2Html + " ctrlPressed = "+ctrlPressed);
         if(lesson1Html.contains("id") && lesson2Html.contains("id")){
             long id1 = Long.parseLong(lesson1Html.split(":")[1].replace(" ", ""));
             long id2 = Long.parseLong(lesson2Html.split(":")[1]);
@@ -42,7 +40,6 @@ private LessonServiceImpl lessonService;
             String[] lesson2HtmlArr = lesson2Html.split(";");
             long timeframeId = Long.parseLong(lesson2HtmlArr[0].split(":")[1]);
             LocalDate date = LocalDate.parse(lesson2HtmlArr[1].split(":")[1]);
-            System.out.println("parsing html from lesson 2: timeframeID of lesson 2 = "+timeframeId+" date = "+date);
             try {
                 if(!ctrlPressed) {
                     lessonService.moveToOtherDate(id1, timeframeId, date);
