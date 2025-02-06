@@ -286,3 +286,7 @@ body{
     box-sizing: border-box;
     padding:15px 0 15px;
 }
+
+.schedule-cell{
+    max-width:250px
+}

@@ -97,19 +97,19 @@
                                 #temporals.format(timeFramesList.get(i).getStartTime(),'HH:mm')+' - '+#temporals.format(timeFramesList.get(i)
                                 .getEndTime(),'HH:mm')).get(weekDatesList.get(y))}">
                             <th:block th:if="${lesson!=null}">
-                                <td th:styleappend="${lesson.isOnline()}?'background-color:'+${onlineClassColor}:'background-color:'+${lesson.classTypeColor}">
-                                    <span th:if="${lesson.getDiscipline()!=null && !lesson.getDiscipline().isEmpty()}">
-                                        <b><span th:text="${lesson.discipline}"></span></b></b><br></span>
-<!--                                    <span th:if="${lesson.getGroupNumber()!=null && lesson.getGroupNumber()!=0}"-->
-<!--                                          th:text="${'Група: '+lesson.groupNumber}"/><br>-->
-                                    <span th:if="${lesson.getTeacher()!=null}">
-                                        <i><span th:text="${'Викладач: '+lesson.teacher}"/></i><br></span>
-                                    <span th:if="${lesson.isOnline()}">ONLINE!<br></span>
+                                <td th:class="schedule-cell" th:styleappend="${lesson.isOnline()}?'background-color:'+${onlineClassColor}:'background-color:'+${lesson.classTypeColor}">
+                                    <p th:if="${lesson.getDiscipline()!=null && !lesson.getDiscipline().isEmpty() && lesson.getDiscipline()!=' '}">
+                                        <b><span th:text="${lesson.discipline}"></span></b></p>
+                                    <p th:if="${lesson.getTeacher()!=null && lesson.getTeacher()!=' '}">
+                                        <i><span th:text="${'Викладач: '+lesson.teacher}"/></i></p>
+                                    <p th:if="${lesson.isOnline()}">ONLINE!</p>
                                     <span th:if="${lesson.auditoriumNumber!=null && !lesson.auditoriumNumber.isEmpty()}">
-                                          <span th:text="${'Аудиторія '+lesson.auditoriumNumber}"/><br></span>
+                                          <span th:text="${'Аудиторія '+lesson.auditoriumNumber}"/></span>
                                     <span th:if="${lesson.showClassTypeOnSchedule}"> <span th:text="${lesson.classType}"/><br></span>
                                     <span style="display: none;"
                                           class="postdatacell"><th:block th:text="${'id:'+lesson.id}"/></span>
+                                    <p th:if="${lesson.comment!=null}"
+                                       th:text="${lesson.comment}"/>
 
                                 </td>
 

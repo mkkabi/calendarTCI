@@ -185,7 +185,7 @@
                                 #temporals.format(timeFramesList.get(i).getStartTime(),'HH:mm')+' - '+#temporals.format(timeFramesList.get(i)
                                 .getEndTime(),'HH:mm')).get(weekDatesList.get(y))}">
                                 <th:block th:if="${lesson!=null}">
-                                    <td class="tg-0lax draggable-item"
+                                    <td class="tg-0lax draggable-item schedule-cell"
                                         th:styleappend="${lesson.isOnline()}?'background-color:'+${onlineClassColor}:'background-color:'+${lesson.classTypeColor}">
                                         <a class="icon-delete"
                                            th:href="@{|/lessons/${lesson.id}/delete?urlFrom=${'/groups/'+group.id+'/read/'+weeksToAddOrSubtractToQuery}|}"
@@ -209,7 +209,7 @@
 
                                 </th:block>
                                 <th:block th:if="${lesson==null}">
-                                    <td class="tg-0lax draggable-item">
+                                    <td class="tg-0lax draggable-item schedule-cell">
                                         <span style="display: none" class="postdatacell"><th:block
                                                 th:text="${'timeFrameId:'+timeFramesList.get(i).id+';startDate:'}+${#temporals.format(weekDatesList.get(y), 'yyyy-MM-dd')}"/></span>
                                         <a th:title="'lesson for date '+ ${#temporals.format(weekDatesList.get(y), 'yyyy-MM-dd')+' and time '+timeFramesList.get(i).getStartTime()}"
