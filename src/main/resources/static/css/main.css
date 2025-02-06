@@ -290,3 +290,6 @@ body{
 .schedule-cell{
     max-width:250px
 }
+
+.normalize-cell{min-height:120px; min-width: 120px;
+line-height:120px;}
