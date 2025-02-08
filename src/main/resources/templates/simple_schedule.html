@@ -116,10 +116,12 @@
                             </th:block>
                             <th:block th:if="${lesson==null}">
                                 <td class=" ">
+                                    <div class="normalize-cell">
                                             <span style="display: none"
                                                   class="postdatacell"><th:block
                                                     th:text="${'timeFrameId:'+timeFramesList.get(i).id+';startDate:'}"/><th:block
                                                     th:text="${#temporals.format(weekDatesList.get(y), 'yyyy-MM-dd')}"/></span>
+                                    </div>
                                 </td>
                             </th:block>
                         </th:block>
