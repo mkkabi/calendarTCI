@@ -1,15 +1,17 @@
 package com.mkkabi.dev.model;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
+
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
-import javax.validation.constraints.Pattern;
 import java.time.LocalTime;
 
 @Entity
+@Data
 @NoArgsConstructor
 @Getter
 @Setter
@@ -20,16 +22,17 @@ public class TimeFrame {
 
     @Id
     @EqualsAndHashCode.Include
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "timeframe-sequence")
-    @GenericGenerator(
-            name = "timeframe-sequence",
-            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-            parameters = {
-                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "timeframe_sequence"),
-                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "30"),
-                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
-            }
-    )
+//    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "timeframe-sequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GenericGenerator(
+//            name = "timeframe-sequence",
+//            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+//            parameters = {
+//                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "timeframe_sequence"),
+//                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "30"),
+//                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
+//            }
+//    )
     private long id;
 
     @EqualsAndHashCode.Exclude
@@ -60,4 +63,5 @@ public class TimeFrame {
     @Pattern(regexp = "[\\w, #]{3,7}", message = "only colors in hex format, without leading #")
     @Column
     private String color;
+
 }

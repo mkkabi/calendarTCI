@@ -1,16 +1,14 @@
 package com.mkkabi.dev.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Entity
+@Data
 @NoArgsConstructor
 @Getter
 @Setter
@@ -18,16 +16,17 @@ import java.util.List;
 @Table(name = "roles")
 public class Role {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "rolesequence-generator")
-    @GenericGenerator(
-            name = "rolesequence-generator",
-            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-            parameters = {
-                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "role_sequence"),
-                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "10"),
-                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
-            }
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "rolesequence-generator")
+//    @GenericGenerator(
+//            name = "rolesequence-generator",
+//            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+//            parameters = {
+//                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "role_sequence"),
+//                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "10"),
+//                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
+//            }
+//    )
     private long id;
 
     @NotBlank(message = "The 'name' cannot be empty")

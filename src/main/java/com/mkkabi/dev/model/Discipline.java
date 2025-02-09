@@ -1,19 +1,15 @@
 package com.mkkabi.dev.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Range;
-import javax.persistence.Transient;
 
-import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Data
 @DynamicUpdate
 @Table(name = "disciplines")
 @NoArgsConstructor
@@ -22,16 +18,17 @@ import java.util.List;
 @ToString
 public class Discipline {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "discipline-sequence")
-    @GenericGenerator(
-            name = "discipline-sequence",
-            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-            parameters = {
-                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "discipline_sequence"),
-                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "20"),
-                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
-            }
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "discipline-sequence")
+//    @GenericGenerator(
+//            name = "discipline-sequence",
+//            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+//            parameters = {
+//                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "discipline_sequence"),
+//                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "20"),
+//                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
+//            }
+//    )
     private long id;
 
     @ToString.Exclude
@@ -49,10 +46,9 @@ public class Discipline {
     private ClassType controlForm;
 
     @ToString.Include
-     @ManyToOne
+    @ManyToOne
     @JoinColumn(name = "education_form_id", nullable = true)
     private EducationForm educationForm;
-
 
     @ToString.Include
     @ManyToOne

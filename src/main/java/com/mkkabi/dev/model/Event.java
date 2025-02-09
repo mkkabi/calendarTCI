@@ -1,19 +1,17 @@
 package com.mkkabi.dev.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@Data
 @Table(name = "events")
 @NoArgsConstructor
 @Getter
@@ -22,16 +20,17 @@ import java.util.List;
 public class Event implements Comparable<Event>{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "sequence-generator")
-    @GenericGenerator(
-            name = "sequence-generator",
-            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-            parameters = {
-                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "event_sequence"),
-                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "10"),
-                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
-            }
-    )
+//    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "sequence-generator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GenericGenerator(
+//            name = "sequence-generator",
+//            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+//            parameters = {
+//                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "event_sequence"),
+//                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "10"),
+//                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
+//            }
+//    )
     private long id;
 
     @NotBlank(message = "The 'title' cannot be empty")

@@ -17,11 +17,11 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import com.mkkabi.dev.service.TimeFrameService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.stream.Collectors;
 
 @Service

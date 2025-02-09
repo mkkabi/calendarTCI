@@ -5,13 +5,13 @@ import com.mkkabi.dev.model.User;
 import com.mkkabi.dev.service.UserService;
 import com.mkkabi.dev.tools.AppLogger;
 import com.mkkabi.dev.service.EventService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

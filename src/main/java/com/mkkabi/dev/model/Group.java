@@ -1,6 +1,8 @@
 package com.mkkabi.dev.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,29 +10,30 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
+@Data
 @NoArgsConstructor
 @Getter
 @Setter
 //@ToString
-@javax.persistence.Table(name = "groups")
+@Table(name = "groups")
 public class Group {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "group-sequence")
-    @GenericGenerator(
-            name = "group-sequence",
-            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-            parameters = {
-                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "group_sequence"),
-                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "30"),
-                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
-            }
-    )
+//    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "group-sequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GenericGenerator(
+//            name = "group-sequence",
+//            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+//            parameters = {
+//                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "group_sequence"),
+//                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "30"),
+//                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
+//            }
+//    )
     private long id;
 
     @Range(min = 2018, max = 2040,

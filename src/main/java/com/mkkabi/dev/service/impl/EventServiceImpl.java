@@ -6,7 +6,7 @@ import com.mkkabi.dev.repository.EventRepository;
 import com.mkkabi.dev.service.EventService;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

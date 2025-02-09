@@ -8,9 +8,9 @@ import com.mkkabi.dev.tools.AppLogger;
 
 import java.util.logging.Logger;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

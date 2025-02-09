@@ -1,17 +1,18 @@
 package com.mkkabi.dev.model;
 
 
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.temporal.WeekFields;
 import java.util.List;
 import java.util.Locale;
 
 @Entity
+@Data
 @NoArgsConstructor
 @Getter
 @Setter
@@ -20,16 +21,17 @@ import java.util.Locale;
 public class Lesson {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "lesson-sequence")
-    @GenericGenerator(
-            name = "lesson-sequence",
-            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-            parameters = {
-                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "lesson_sequence"),
-                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "420"),
-                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
-            }
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "lesson-sequence")
+//    @GenericGenerator(
+//            name = "lesson-sequence",
+//            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+//            parameters = {
+//                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "lesson_sequence"),
+//                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "420"),
+//                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
+//            }
+//    )
     private long id;
 
 //    @ManyToOne(fetch = FetchType.EAGER)

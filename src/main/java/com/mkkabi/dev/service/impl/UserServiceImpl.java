@@ -8,9 +8,10 @@ import com.mkkabi.dev.tools.AppLogger;
 
 import java.util.logging.Logger;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,14 +21,17 @@ public class UserServiceImpl implements UserService {
     private final Logger logger = new AppLogger("UserServiceImpl.class");
 
     private final UserRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository repository) {
+    public UserServiceImpl(UserRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public User create(User user) {
         try {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             User savedUser = repository.save(user);
             logger.info("saved user "+savedUser.getId());
             return savedUser;

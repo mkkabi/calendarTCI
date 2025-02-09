@@ -10,14 +10,15 @@ import com.mkkabi.dev.service.DisciplineService;
 
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.*;
-import javax.transaction.Transactional;
-import java.util.stream.Collectors;
+
 
 @Service
 public class DisciplineServiceImpl implements DisciplineService {

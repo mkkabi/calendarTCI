@@ -1,16 +1,14 @@
 package com.mkkabi.dev.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.*;
-import javax.validation.constraints.Pattern;
 import java.util.List;
+import java.util.Set;
 
 @Entity
+@Data
 @NoArgsConstructor
 @Getter
 @Setter
@@ -18,16 +16,17 @@ import java.util.List;
 @Table(name = "users")
 public class User  {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "user-sequence")
-    @GenericGenerator(
-            name = "user-sequence",
-            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-            parameters = {
-                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "user_sequence"),
-                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "10"),
-                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
-            }
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "user-sequence")
+//    @GenericGenerator(
+//            name = "user-sequence",
+//            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+//            parameters = {
+//                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "user_sequence"),
+//                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "10"),
+//                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
+//            }
+//    )
 //    @SequenceGenerator(name = "toDo_Gen", sequenceName = "toDo_sequence", initialValue = 10, allocationSize = 1)
     private long id;
 
@@ -55,5 +54,18 @@ public class User  {
             joinColumns = @JoinColumn(name = "attendee_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))
     private List<Event> attendingEvents;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
+    )
+    private Set<Role> roles;
 
 }

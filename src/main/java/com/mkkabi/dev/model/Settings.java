@@ -1,15 +1,13 @@
 package com.mkkabi.dev.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import jakarta.persistence.*;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
+@Data
 @NoArgsConstructor
 @Getter
 @Setter

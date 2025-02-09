@@ -7,14 +7,13 @@ import com.mkkabi.dev.model.Teacher;
 import com.mkkabi.dev.repository.TeacherRepository;
 import com.mkkabi.dev.tools.AppLogger;
 import com.mkkabi.dev.service.TeacherService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
-//import javax.transaction.Transactional;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;

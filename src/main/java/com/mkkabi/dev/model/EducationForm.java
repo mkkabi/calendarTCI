@@ -1,15 +1,12 @@
 package com.mkkabi.dev.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
-import javax.validation.constraints.Pattern;
-
 @Entity
+@Data
 @Table(name = "education_form")
 @NoArgsConstructor
 @Getter
@@ -17,16 +14,17 @@ import javax.validation.constraints.Pattern;
 @ToString
 public class EducationForm {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "educationform-sequence")
-    @GenericGenerator(
-            name = "educationform-sequence",
-            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-            parameters = {
-                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "educationform_sequence"),
-                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "30"),
-                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
-            }
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "educationform-sequence")
+//    @GenericGenerator(
+//            name = "educationform-sequence",
+//            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+//            parameters = {
+//                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "educationform_sequence"),
+//                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "30"),
+//                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
+//            }
+//    )
     private  Long Id;
 
     @Pattern(regexp = "[A-Z, \\u0400-\\u042F][\\u0430-\\u0457,\\w,\\-,_(,), ,\\\"]+",
